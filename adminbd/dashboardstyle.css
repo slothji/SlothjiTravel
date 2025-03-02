@@ -1,0 +1,420 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+:root {
+  --header-height: 3rem;
+  --nav-width: 68px;
+  --first-color: #122219;
+  --first-color-light: #d4ffce;
+  --white-color: #d4ffce;
+  --body-font: "Nunito", sans-serif;
+  --normal-font-size: 1rem;
+  --z-fixed: 100;
+}
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+body {
+  position: relative;
+  margin: var(--header-height) 0 0 0;
+  padding: 0 1rem;
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+  transition: 0.5s;
+}
+/* ปิดลูกศรขึ้นลงใน Chrome, Safari, Edge */
+.sort-input::-webkit-outer-spin-button,
+.sort-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a i {
+  color: var(--first-color-light);
+}
+.header {
+  width: 100%;
+  height: var(--header-height);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: var(--white-color);
+  z-index: var(--z-fixed);
+  transition: 0.5s;
+}
+.header_toggle {
+  color: var(--first-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.header_img {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.header_img img {
+  width: 40px;
+}
+.l-navbar {
+  position: fixed;
+  top: 0;
+  left: -30%;
+  width: var(--nav-width);
+  height: 100vh;
+  background-color: var(--first-color);
+  padding: 0.5rem 1rem 0 0;
+  transition: 0.5s;
+  z-index: var(--z-fixed);
+}
+.nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.nav_logo,
+.nav_link {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  column-gap: 1rem;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+}
+.nav_logo {
+  margin-bottom: 2rem;
+}
+
+.nav_logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  justify-items: center;
+}
+
+.nav_logo-icon {
+  font-size: 1.25rem;
+  color: var(--white-color);
+}
+.nav_logo-name {
+  color: var(--white-color);
+  font-weight: 700;
+}
+.nav_link {
+  position: relative;
+  color: var(--first-color-light);
+  margin-bottom: 1.5rem;
+  transition: 0.3s;
+}
+
+.nav_link:hover,
+.nav_link:hover i {
+  background: #d4ffce;
+  color: var(--first-color);
+  transition: 0.3s;
+}
+.nav_icon {
+  font-size: 1.5rem;
+}
+.show {
+  left: 0;
+}
+.body-pd {
+  padding-left: calc(var(--nav-width) + 1rem);
+}
+.active {
+  color: var(--white-color);
+}
+.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 32px;
+  background-color: var(--white-color);
+}
+.height-100 {
+  height: 100vh;
+}
+
+/* galleryModal */
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#myImg:hover {
+  opacity: 0.7;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1500; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content,
+#caption {
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* The Close Button */
+.close {
+  position: fixed; /* Fixed to the modal */
+  top: 20px; /* Adjust top position */
+  right: 50px; /* Adjust right position */
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  z-index: 1100; /* Ensure it's above other elements */
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.toggle-visibility {
+  position: relative;
+  z-index: 10; /* ทำให้ปุ่มอยู่ด้านบนสุด */
+}
+
+.top-place {
+  height: 300px;
+  width: 100%;
+  top: 60px;
+  display: flex;
+}
+
+.top-place-card {
+  display: flex;
+  height: 400px;
+  width: 300px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: -2px 0 2px #000;
+  transition: 0.4s ease-out;
+  position: relative;
+  left: 0px;
+}
+
+.top-place-card:hover {
+  transform: translateY(-20px);
+  transition: 0.4s ease-out;
+}
+
+.tpc-title {
+  color: rgb(0, 0, 0);
+  font-weight: 300;
+  position: absolute;
+  left: 20px;
+  top: 15px;
+}
+
+.tpc-bar {
+  position: absolute;
+  top: 15%;
+  height: 5px;
+  width: 250px;
+}
+
+.emplybar {
+  position: absolute;
+  background-color: #2e3033;
+  width: 100%;
+  height: 100%;
+}
+
+.fillbar {
+  position: absolute;
+  top: 0px;
+  z-index: 3;
+  width: 0px;
+  height: 100%;
+  background: rgb(0, 154, 217);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 154, 217, 1) 0%,
+    rgba(0, 255, 8, 1) 10%,
+    rgba(183, 255, 0, 1) 20%,
+    rgba(255, 247, 0, 1) 30%,
+    rgba(255, 174, 0, 1) 40%,
+    rgba(255, 132, 0, 1) 50%,
+    rgba(255, 64, 0, 1) 60%,
+    rgba(255, 0, 111, 1) 70%,
+    rgba(255, 0, 183, 1) 80%,
+    rgba(183, 0, 255, 1) 90%,
+    rgb(51, 0, 255) 100%
+  );
+  transition: 0.6s ease-out;
+}
+
+.top-place-card:hover .fillbar {
+  width: 250px;
+  transition: 0.4s ease-out;
+}
+
+.top-place-img {
+  margin-top: 65px;
+}
+
+.tpc-detail {
+  margin-top: 10px;
+}
+
+/* dashboard ปุ่ม */
+.filter-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-items: center;
+}
+
+.filter-btn:hover {
+  background-color: #5a6268;
+}
+
+.filter-btn.active {
+  background-color: #007bff !important;
+  color: white;
+}
+
+/* ขนาดกราฟ */
+#myfirstChart {
+  width: 400px !important;
+  height: 400px !important;
+}
+
+/* 100% Image Width on Smaller Screens */
+@media only screen and (max-width: 700px) {
+  .modal-content {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  body {
+    margin: calc(var(--header-height) + 1rem) 0 0 0;
+    padding-left: calc(var(--nav-width) + 2rem);
+  }
+  .header {
+    height: calc(var(--header-height) + 1rem);
+    padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+  }
+  .header_img {
+    width: 40px;
+    height: 40px;
+  }
+  .header_img img {
+    width: 45px;
+  }
+  .l-navbar {
+    left: 0;
+    padding: 1rem 1rem 0 0;
+  }
+  .show-slidbar {
+    width: calc(var(--nav-width) + 156px);
+  }
+  .body-pd {
+    padding-left: calc(var(--nav-width) + 188px);
+  }
+}
+
+.type-table .row .card-body {
+  padding: 30px;
+
+  border-radius: 15px;
+}
+
+.add-text {
+  font-size: 16px;
+  color: #d4ffce;
+  outline: none;
+  text-decoration: none;
+}
+
+.action-btn {
+  align-items: center;
+  text-align: center;
+}
+
+.action-btn i {
+  margin-left: 50%;
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    position: absolute;
+  }
+
+  .sidebar.active {
+    width: 200px;
+  }
+
+  .sidebar.active ~ .main-content {
+    left: 200px;
+    width: calc(100% - 200px);
+  }
+}
+@media (max-width: 425px) {
+  .typetable {
+    height: 600px;
+  }
+}

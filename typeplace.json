@@ -1,0 +1,26 @@
+[
+  {
+    "title": "ท่องเที่ยว",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    "image": "image/maeya waterfall 2.jpg",
+    "link": "places.php"
+  },
+  {
+    "title": "ร้านอาหาร",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    "image": "image/chiangmai food.jpg",
+    "link": "places.php"
+  },
+  {
+    "title": "ร้านค้า",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    "image": "image/chaingmai store.jpg",
+    "link": "places.php"
+  },
+  {
+    "title": "ที่พัก",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+    "image": "image/chiangmai hotel.jpg",
+    "link": "places.php"
+  }
+]
