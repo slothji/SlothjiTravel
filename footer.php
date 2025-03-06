@@ -34,9 +34,7 @@ if ($typeresult->num_rows > 0) {
     <div class="footer-col col-lg-3 col-md-6 col-sm-6">
         <h4>company</h4>
         <ul>
-            <li><a href="#">about us</a></li>
-            <li><a href="#">teams</a></li>
-            <li><a href="#">contact us</a></li>
+            <li><a href="aboutus.php">about us</a></li>
         </ul>
     </div>
     <div class="footer-col col-lg-3 col-md-6 col-sm-6">

@@ -1,5 +1,7 @@
 <?php
+session_start(); // ต้องเรียกใช้ก่อนใช้งาน $_SESSION
 include 'dataDB.php';
+
 if (isset($_POST['username'], $_POST['email'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -10,9 +12,15 @@ if (isset($_POST['username'], $_POST['email'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    echo ($result->num_rows > 0) ? "found" : "not_found";
+    if ($result->num_rows > 0) {
+        $_SESSION['verified_user'] = $username; // ✅ บันทึก Session
+        echo "found";
+    } else {
+        echo "not_found";
+    }
 }
 ?>
+
 // use PHPMailer\PHPMailer\PHPMailer;
 // use PHPMailer\PHPMailer\Exception;
 

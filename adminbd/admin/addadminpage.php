@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $AdminPassword = $_POST['Admin_Password'];
     $AdminEmail = $_POST['Admin_Email'];
 
-    // เก็บค่าที่ผู้ใช้กรอกไว้ใน SESSION
     $_SESSION['old_input'] = [
         'Admin_Username' => $AdminUserName,
         'Admin_Password' => $AdminPassword,
@@ -39,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->execute()) {
                 $_SESSION['status'] = 'success';
                 $_SESSION['message'] = 'เพิ่มข้อมูลสำเร็จ!';
-                unset($_SESSION['old_input']); // เคลียร์ค่าเมื่อสำเร็จ
+                unset($_SESSION['old_input']);
             } else {
                 $_SESSION['status'] = 'error';
                 $_SESSION['message'] = 'ไม่สามารถเพิ่มข้อมูลได้';

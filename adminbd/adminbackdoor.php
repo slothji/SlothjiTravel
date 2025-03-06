@@ -30,47 +30,42 @@ if (!isset($_SESSION['AdminUserName'])) {
 <body id="body-pd">
 
     <?php include 'sidebar.php' ?>
-    <!-- <p class="bold"><?php echo htmlspecialchars($_SESSION['AdminUserName']); ?></p> -->
-    <!--Container Main start-->
+
     <section class="mt-4">
-        <!-- ปุ่มกรอง -->
+
         <div class="container mb-0 mt-4">
             <div class="text-center mb-3" id="filterContainer" style="margin-top: 5.5rem;">
                 <button class="btn btn-secondary filter-btn active mb-2" data-filter="all">รวมทั้งหมด</button>
                 <button class="btn btn-secondary filter-btn mb-2" data-filter="monthly">รายเดือน</button>
                 <button class="btn btn-secondary filter-btn mb-2" data-filter="daily">รายวัน</button>
-                <!-- ปุ่มกรองรายปี -->
+                <!-- รายปี -->
                 <button class="btn btn-secondary filter-btn mb-2" data-filter="yearly">รายปี</button>
-                <!-- ปุ่มกรองช่วงวัน -->
+                <!-- ช่วงวัน -->
                 <button class="btn btn-secondary filter-btn mb-2" data-filter="date-range">ช่วงวัน</button>
             </div>
 
             <form id="searchForm" class="d-flex flex-column align-items-center">
-                <!-- ฟอร์มเลือกเดือน -->
+
                 <select id="monthSelector" class="form-control mb-3" style="display: none; width: 200px;">
                     <option value="">-- เลือกเดือน --</option>
                     <?php for ($m = 1; $m <= 12; $m++) {
                         echo "<option value='$m'>" . date('F', mktime(0, 0, 0, $m, 1)) . "</option>";
                     } ?>
                 </select>
-                <!-- ฟอร์มเลือกวัน -->
+
                 <input type="date" id="dateInput" class="form-control mb-3" style="display: none; width: 200px;">
 
-                <!-- ฟอร์มเลือกปี (ย้อนหลังสูงสุด 5 ปี) -->
                 <select id="yearSelector" class="form-control mb-3" style="display: none; width: 200px;">
                     <option value="">-- เลือกปี --</option>
                     <?php
-                    // เชื่อมต่อฐานข้อมูล
                     $query = "SELECT DISTINCT YEAR(VisitDate) AS year FROM visitcount ORDER BY year DESC";
                     $result = mysqli_query($conn, $query);
 
-                    // แสดงปีที่มีข้อมูล
                     while ($row = mysqli_fetch_assoc($result)) {
                         $year = $row['year'];
                         echo "<option value='$year'>$year</option>";
                     }
 
-                    // ปิดการเชื่อมต่อฐานข้อมูล
                     mysqli_close($conn);
                     ?>
                 </select>
@@ -121,7 +116,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                 </div>
             </div>
 
-            <!-- กราฟการเข้าชม -->
+            <!-- กราฟการเข้าชมแต่ละประเภท -->
             <div class="row">
                 <div class="col-12">
                     <div class="card" style="box-shadow: 3px 3px 3px 3px rgba(0,0,0,0.3);">
@@ -133,8 +128,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
                 </div>
             </div>
-
-
         </div>
 
 
@@ -144,22 +137,18 @@ if (!isset($_SESSION['AdminUserName'])) {
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div id="topVisitedSection" class="card bg-light pt-3 px-3"
                         style="width: 100%; align-items: center; box-shadow: 3px 3px 3px rgba(0,0,0,0.3);">
-                        <!-- หัวข้อ -->
                         <div class="text-center mb-3">
                             <h4 class="mt-2 mb-2">สถานที่ที่มีคนเข้าชมมากที่สุด 5 อันดับ</h4>
                         </div>
-
-                        <!-- ตาราง -->
                         <table id="topVisitedTable" name="topVisitedTable" class="display table caption-top" style="width: 100%;">
                             <thead class="table-dark">
                                 <tr>
                                     <th class="text-center">อันดับ</th>
-                                    <th class="text-center">สถานที่</th> <!-- จะแสดงทั้งชื่อและรูปสถานที่ -->
+                                    <th class="text-center">สถานที่</th>
                                     <th class="text-center" width="25%">จำนวนการเข้าชม</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Data will be populated here by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -169,22 +158,18 @@ if (!isset($_SESSION['AdminUserName'])) {
                 <div class="col-lg-6 col-md-12 col-sm-12">
                     <div id="topReviewedSection" class="card bg-light pt-3 px-3"
                         style="width: 100%; align-items: center; box-shadow: 3px 3px 3px rgba(0,0,0,0.3);">
-                        <!-- หัวข้อ -->
                         <div class="text-center mb-3">
                             <h4 class="mt-2 mb-2">สถานที่ที่มีคนรีวิวมากที่สุด 5 อันดับ</h4>
                         </div>
-
-                        <!-- ตาราง -->
                         <table id="topReviewedTable" name="topReviewedTable" class="display table caption-top" style="width: 100%;">
                             <thead class="table-dark">
                                 <tr>
                                     <th class="text-center">อันดับ</th>
-                                    <th class="text-center">สถานที่</th> <!-- จะแสดงทั้งชื่อและรูปสถานที่ -->
+                                    <th class="text-center">สถานที่</th>
                                     <th class="text-center" width="25%">จำนวนการเขียนรีวิว</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Data will be populated here by JavaScript -->
                             </tbody>
                         </table>
                     </div>

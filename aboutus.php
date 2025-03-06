@@ -1,31 +1,28 @@
 <?php
-include 'dataDB.php'; // เชื่อมต่อฐานข้อมูล
+include 'dataDB.php';
 session_start();
-// เก็บ URL ปัจจุบันใน session ก่อนที่จะแสดงฟอร์มล็อกอิน
+
 if (!isset($_SESSION['redirect_url'])) {
   $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 }
 
-// ดึงข้อมูลจากตาราง aboutus
+
 $sql = "SELECT * FROM aboutus";
 $result = $conn->query($sql);
 
-// ตรวจสอบข้อมูล
 if ($result->num_rows > 0) {
   $row = $result->fetch_assoc();
-
-  // ตรวจสอบว่าทุกช่องในตารางเป็นค่าว่างหรือไม่
   if (
     empty($row['AboutImg']) && empty($row['AboutTitle']) && empty($row['AboutProfile']) &&
     empty($row['AboutDetail']) && empty($row['AboutSubTitle']) && empty($row['AboutSubDetail'])
   ) {
-    // ถ้าทุกช่องไม่มีข้อมูล ให้ซ่อนหน้านี้
-    header('Location: index.php'); // หรือหน้าอื่นที่เหมาะสม
+
+    header('Location: index.php');
     exit;
   }
 } else {
-  // ถ้าไม่มีข้อมูลในฐานข้อมูล
-  header('Location: index.php'); // หรือหน้าอื่นที่เหมาะสม
+
+  header('Location: index.php');
   exit;
 }
 ?>
@@ -51,37 +48,23 @@ if ($result->num_rows > 0) {
 <body>
 
   <?php include 'navbar.php'; ?>
-
   <section class="locate-group p-0 m-0">
     <div>
       <div class="container-fluid p-0 m-0">
         <div class="about-group">
-
-          <!-- แสดง AboutImg -->
           <img src="./adminbd/aboutus/uploads/about_img/<?php echo htmlspecialchars($row['AboutImg']); ?>" class="aboutBG d-block w-100" data-aos="fade-in">
-
           <div class="about-title">
             <div class="title-we">
-
-              <!-- แสดง AboutTitle -->
               <h1 data-aos="fade-up"><?php echo htmlspecialchars($row['AboutTitle']); ?></h1>
             </div>
             <div class="row">
               <div class="col-12">
-                <!-- แสดง AboutProfile -->
                 <img src="./adminbd/aboutus/uploads/about_profile/<?php echo htmlspecialchars($row['AboutProfile']); ?>" class="myprofile" data-aos="fade-up">
-
-                <!-- แสดง AboutDetail -->
                 <div class="abouttext-scroll">
                   <p data-aos="fade-up"><?php echo nl2br(htmlspecialchars($row['AboutDetail'])); ?></p>
-
-                  <!-- แสดง AboutSubTitle -->
                   <h3 data-aos="fade-up"><?php echo htmlspecialchars($row['AboutSubTitle']); ?></h3>
-
-                  <!-- แสดง AboutSubDetail -->
                   <p data-aos="fade-up"><?php echo nl2br(htmlspecialchars($row['AboutSubDetail'])); ?></p>
                 </div>
-
               </div>
             </div>
           </div>
@@ -112,10 +95,11 @@ if ($result->num_rows > 0) {
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({
-      duration: 1000, // ระยะเวลาแอนิเมชันในมิลลิวินาที
-      once: true // เล่นเอฟเฟกต์ครั้งเดียว
+      duration: 1000,
+      once: true
     });
   </script>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       function handleOverflowScroll() {
@@ -129,16 +113,13 @@ if ($result->num_rows > 0) {
         }
       }
 
-      // เรียกใช้งานตอนโหลดหน้าเว็บ
+
       handleOverflowScroll();
 
-      // เรียกใช้งานเมื่อขนาดหน้าต่างเปลี่ยนแปลง
+
       window.addEventListener("resize", handleOverflowScroll);
     });
   </script>
-
-
-
 </body>
 
 </html>

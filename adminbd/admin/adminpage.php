@@ -2,7 +2,7 @@
 session_start();
 include '../db.php';
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
 
@@ -48,7 +48,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                                     <tr>
                                         <th class="text-center" width="10%">AdminID</th>
                                         <th class="text-center">AdminUserName</th>
-                                        <!-- <th>AdminPassword</th> -->
                                         <th class="text-center">AdminEmail</th>
                                         <th class="text-center" width="15%">Action</th>
                                     </tr>
@@ -59,8 +58,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                                     if (!$stmt) {
                                         die("Error: " . $conn->error);
                                     }
-                                    // You don't need to call execute() here
-                                    $Admins = $stmt->fetch_all(MYSQLI_ASSOC); // Use fetch_all for an array of results
+                                    $Admins = $stmt->fetch_all(MYSQLI_ASSOC);
                                     $num = 1;
                                     foreach ($Admins as $admin) {
 
@@ -68,7 +66,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                                         <tr>
                                             <td class="text-center"><?php echo $num; ?></td>
                                             <td class=""><?php echo htmlspecialchars($admin['AdminUserName']); ?></td>
-                                            <!-- <td><?php echo htmlspecialchars($admin['AdminPassword']); ?></td> -->
                                             <td class=""><?php echo htmlspecialchars($admin['AdminEmail']); ?></td>
                                             <td class="text-center">
                                                 <button class="btn btn-warning btn-sm edit-btn" data-id="1" <?php echo $admin['AdminID']; ?>" data-bs-target="#editModal">
@@ -129,14 +126,14 @@ if (!isset($_SESSION['AdminUserName'])) {
                     }).then(() => {
                         window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
     <script>
@@ -145,10 +142,10 @@ if (!isset($_SESSION['AdminUserName'])) {
 
         togglePassword.addEventListener("click", function() {
 
-            // toggle the type attribute
+
             const type = password.getAttribute("type") === "password" ? "text" : "password";
             password.setAttribute("type", type);
-            // toggle the eye icon
+
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });
@@ -165,17 +162,17 @@ if (!isset($_SESSION['AdminUserName'])) {
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
+
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
+
                         nav.classList.toggle('show-slidbar')
 
-                        // change icon
+
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
+
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
+
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -183,7 +180,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -194,7 +190,6 @@ if (!isset($_SESSION['AdminUserName'])) {
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
     <script>
@@ -214,7 +209,7 @@ if (!isset($_SESSION['AdminUserName'])) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: 'deleteadmin.php', // ตรวจสอบให้แน่ใจว่าไฟล์นี้อยู่ในที่ถูกต้อง
+                        url: 'deleteadmin.php',
                         type: 'POST',
                         data: {
                             AdminID: adminID
@@ -262,7 +257,7 @@ if (!isset($_SESSION['AdminUserName'])) {
         })
     </script>";
     }
-    unset($_SESSION['update_success']); // ลบ session หลังจากแสดงข้อความแล้ว 
+    unset($_SESSION['update_success']);
 
     ?>
     <!-- <?php if ($this->session->flashdata('result') == 'false') {

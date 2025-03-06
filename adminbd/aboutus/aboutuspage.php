@@ -3,21 +3,19 @@ session_start();
 include '../db.php';
 
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
-// เมื่อบันทึกข้อมูล
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $aboutTitle = $_POST['about_title'];
     $aboutDetail = $_POST['about_detail'];
     $aboutSubTitle = $_POST['about_subtitle'];
     $aboutSubDetail = $_POST['about_subdetail'];
 
-    // โฟลเดอร์อัปโหลด
     $uploadDirImg = 'uploads/about_img/';
     $uploadDirProfile = 'uploads/about_profile/';
 
-    // สร้างโฟลเดอร์
     if (!is_dir($uploadDirImg)) {
         mkdir($uploadDirImg, 0777, true);
     }
@@ -25,56 +23,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mkdir($uploadDirProfile, 0777, true);
     }
 
-
-    // ดึงข้อมูลในฐานข้อมูล (ล่าสุด)
     $result = $conn->query("SELECT * FROM aboutus ORDER BY AboutID DESC LIMIT 1");
     $aboutData = $result->fetch_assoc();
 
-    // เก็บค่ารูปเดิม
     $aboutImg = $aboutData['AboutImg'] ?? '';
     $aboutProfile = $aboutData['AboutProfile'] ?? '';
 
-    // ตรวจสอบการอัปโหลดรูป AboutImg
     if (!empty($_FILES['about_img']['name'])) {
-        // ลบรูปเก่า
+
         if (!empty($aboutImg) && file_exists($uploadDirImg . $aboutImg)) {
             unlink($uploadDirImg . $aboutImg);
         }
-        // อัปโหลดรูปใหม่
         $aboutImgName = basename($_FILES['about_img']['name']);
         move_uploaded_file($_FILES['about_img']['tmp_name'], $uploadDirImg . $aboutImgName);
-        $aboutImg = $aboutImgName; // เก็บเฉพาะชื่อไฟล์
+        $aboutImg = $aboutImgName;
     }
 
-    // ตรวจสอบการอัปโหลดรูป AboutProfile
     if (!empty($_FILES['about_profile']['name'])) {
-        // ลบรูปเก่า
+
         if (!empty($aboutProfile) && file_exists($uploadDirProfile . $aboutProfile)) {
             unlink($uploadDirProfile . $aboutProfile);
         }
-        // อัปโหลดรูปใหม่
+
         $aboutProfileName = basename($_FILES['about_profile']['name']);
         move_uploaded_file($_FILES['about_profile']['tmp_name'], $uploadDirProfile . $aboutProfileName);
-        $aboutProfile = $aboutProfileName; // เก็บเฉพาะชื่อไฟล์
+        $aboutProfile = $aboutProfileName;
     }
 
-    // ตรวจสอบว่ามีข้อมูลในฐานข้อมูลอยู่หรือไม่
     if ($aboutData) {
-        // อัปเดตข้อมูล (UPDATE)
         $stmt = $conn->prepare("UPDATE aboutus SET AboutImg = ?, AboutTitle = ?, AboutProfile = ?, AboutDetail = ?, AboutSubTitle = ?, AboutSubDetail = ? WHERE AboutID = ?");
         $stmt->bind_param("ssssssi", $aboutImg, $aboutTitle, $aboutProfile, $aboutDetail, $aboutSubTitle, $aboutSubDetail, $aboutData['AboutID']);
     } else {
-        // เพิ่มข้อมูลใหม่ (INSERT)
         $stmt = $conn->prepare("INSERT INTO aboutus (AboutImg, AboutTitle, AboutProfile, AboutDetail, AboutSubTitle, AboutSubDetail) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $aboutImg, $aboutTitle, $aboutProfile, $aboutDetail, $aboutSubTitle, $aboutSubDetail);
     }
-
 
     $stmt->execute();
     $stmt->close();
 }
 
-// ดึงข้อมูลล่าสุด
 $result = $conn->query("SELECT * FROM aboutus ORDER BY AboutID DESC LIMIT 1");
 $aboutData = $result->fetch_assoc();
 ?>
@@ -149,7 +136,6 @@ $aboutData = $result->fetch_assoc();
         </div>
     </div>
 
-
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -169,7 +155,6 @@ $aboutData = $result->fetch_assoc();
         src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
@@ -191,10 +176,7 @@ $aboutData = $result->fetch_assoc();
                     })
                 }
             }
-
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
-
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -204,8 +186,6 @@ $aboutData = $result->fetch_assoc();
                 }
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
-
-
         });
     </script>
     <script>
@@ -221,16 +201,14 @@ $aboutData = $result->fetch_assoc();
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
-
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
-
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 

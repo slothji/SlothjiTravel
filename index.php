@@ -99,30 +99,24 @@ if ($typeresult->num_rows > 0) {
       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           <?php
-
-          // ดึงข้อมูลสไลด์ที่เปิดใช้งาน เรียงตาม HomeSort
           $slidesql = "SELECT HomeImg FROM homeslide WHERE HomeStatus = 1 ORDER BY HomeSort ASC";
           $slideresult = $conn->query($slidesql);
-
           if ($slideresult->num_rows > 0):
-            $slideactive = true; // ใช้สำหรับกำหนด "active" ในรูปแรก
+            $slideactive = true;
             while ($sliderow = $slideresult->fetch_assoc()):
           ?>
               <div id="slide1" class="carousel-item <?= $slideactive ? 'active' : '' ?>">
                 <img src="./adminbd/slide/uploadSlide/<?= htmlspecialchars($sliderow['HomeImg']); ?>" class="d-block w-100" alt="Slide Image" onerror="this.onerror=null; this.src='./image/slothp1.png';">
-
               </div>
             <?php
-              $slideactive = false; // รูปที่เหลือจะไม่มี class "active"
+              $slideactive = false;
             endwhile;
           else: ?>
             <div id="slide1" class="carousel-item active">
               <img src="./image/slothp1.png" class="d-block w-100" alt="No Slides Available">
             </div>
           <?php endif; ?>
-
         </div>
-
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>

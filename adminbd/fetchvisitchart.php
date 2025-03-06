@@ -2,13 +2,11 @@
 header('Content-Type: application/json; charset=utf-8');
 require_once('db.php');
 
-// ตรวจสอบการเชื่อมต่อกับฐานข้อมูล
 if (!$conn) {
     echo json_encode(["error" => "ไม่สามารถเชื่อมต่อกับฐานข้อมูล"]);
     exit();
 }
 
-// รับค่าตัวกรองจาก URL
 $filter = $_GET['filter'] ?? 'all';
 $month = $_GET['month'] ?? null;
 $date = $_GET['date'] ?? null;
@@ -35,14 +33,12 @@ if ($filter === 'date-range' && $startDate && $endDate) {
 }
 
 if ($filter === 'all') {
-    // กรองข้อมูลทั้งหมด (ไม่มีเงื่อนไขพิเศษ)
 } else {
     $whereConditions[] = "VisitYear = YEAR(CURRENT_DATE)";
 }
 
 $whereClause = empty($whereConditions) ? "1=1" : implode(" AND ", $whereConditions);
 
-// ตรวจสอบ SQL Query ก่อนรัน
 $sql = "
     SELECT tp.TypeID, tp.TypeTitle, SUM(vc.VisitCount) AS TotalVisitCount
     FROM visitcount vc
@@ -52,7 +48,6 @@ $sql = "
     ORDER BY tp.TypeID
 ";
 
-// ดึงข้อมูลจากฐานข้อมูล
 $result = mysqli_query($conn, $sql);
 
 $visitData = [];
@@ -65,13 +60,10 @@ if ($result) {
         ];
     }
 } else {
-    // ถ้ามีข้อผิดพลาดในการดึงข้อมูล
     echo json_encode(["error" => "เกิดข้อผิดพลาดในการดึงข้อมูล SQL"]);
     exit();
 }
 
-// ส่งข้อมูลกลับเป็น JSON
 echo json_encode($visitData);
 
-// ปิดการเชื่อมต่อฐานข้อมูล
 mysqli_close($conn);

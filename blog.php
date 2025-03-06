@@ -2,12 +2,10 @@
 session_start();
 include 'dataDB.php';
 
-// บันทึก URL ปัจจุบันสำหรับ redirect หลังล็อกอิน
 if (!isset($_SESSION['redirect_url'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 }
 
-// รับค่า PlaceID และตรวจสอบว่าถูกต้อง
 $placeID = isset($_GET['PlaceID']) && is_numeric($_GET['PlaceID']) ? (int)$_GET['PlaceID'] : 0;
 if ($placeID <= 0) {
     die("Invalid Place ID!");
@@ -18,8 +16,6 @@ $visitDate = date('Y-m-d');
 $visitMonth = date('m');
 $visitYear = date('Y');
 
-
-// ✅ อัปเดตหรือเพิ่มข้อมูลในตาราง visitcount (บันทึกการเข้าชมรายวัน)
 $updateVisitCount = "INSERT INTO visitcount (PlaceID, TypeID, VisitDate, VisitMonth, VisitYear, VisitCount)
                      VALUES (?, (SELECT TypeID FROM places WHERE PlaceID = ?), ?, ?, ?, 1)
                      ON DUPLICATE KEY UPDATE VisitCount = VisitCount + 1";
@@ -28,7 +24,6 @@ $stmt->bind_param("iisii", $placeID, $placeID, $visitDate, $visitMonth, $visitYe
 $stmt->execute();
 $stmt->close();
 
-// ✅ ฟังก์ชันสำหรับดึงข้อมูลจากฐานข้อมูล
 function fetchPlaceDetails($conn, $placeID)
 {
     $query = "SELECT * FROM places WHERE PlaceID = ?";
@@ -101,7 +96,6 @@ function getTotalReviews($conn, $placeID)
     return $total;
 }
 
-// ✅ ดึงข้อมูลสถานที่, รูปภาพ, รีวิว และจำนวนรีวิว
 try {
     $reviewsPerPage = 6;
     $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -117,7 +111,6 @@ try {
     die($e->getMessage());
 }
 
-// ✅ ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
 
@@ -150,7 +143,6 @@ $conn->close();
 </head>
 
 <body>
-    <!--  -->
     <?php include 'navbar.php'; ?>
 
     <section>
@@ -165,11 +157,11 @@ $conn->close();
         <div class="contianer blog-body">
             <div class="blog-card container-fuid">
                 <div class="contianer blog-title">
-                    <h1 data-aos="fade-up"><?= htmlspecialchars($place['PlaceTitle']); ?></h1> <!-- แสดงข้อมูลช่อง PlaceTitle ของตาราง places -->
+                    <h1 data-aos="fade-up"><?= htmlspecialchars($place['PlaceTitle']); ?></h1>
                     <div class="row p-0 m-0">
                         <div class="col-lg-12 detail-img">
                             <div class="detail-card mx-auto">
-                                <p data-aos="fade-up"><?= htmlspecialchars($place['PlaceDetail']); ?></p> <!-- แสดงข้อมูลช่อง PlaceDetail ของตาราง places -->
+                                <p data-aos="fade-up"><?= htmlspecialchars($place['PlaceDetail']); ?></p>
                             </div>
                         </div>
                     </div>
@@ -183,7 +175,7 @@ $conn->close();
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-md-6 col-lg-10">
-                        <!-- แสดง Carousel -->
+
                         <div class="carousel slide" id="carouselDemo" data-bs-wrap="true" data-bs-ride="carousel" data-bs-interval="3000" data-aos="fade-up">
                             <div class="carousel-inner">
                                 <?php foreach ($images as $index => $image): ?>
@@ -224,7 +216,7 @@ $conn->close();
             </div>
 
 
-            <!-- ในส่วนของ form ที่ใช้ส่งรีวิว -->
+            <!-- ส่วนของ form ที่ใช้ส่งรีวิว -->
             <div class="container" data-aos="fade-up" style="margin-top: 15rem;">
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-md-8 col-lg-6" style="justify-content: center;">
@@ -253,14 +245,13 @@ $conn->close();
                 </div>
             </div>
 
-            <div class="review-heading" data-aos="fade-up">
-                <span>Comment</span>
+            <div class="review-heading mt-5" data-aos="fade-up">
                 <h1>Review from user</h1>
             </div>
 
             <div id="reviewzone" class="review-box-container" data-aos="fade-up">
                 <?php
-                // กำหนดอาร์เรย์ของรูปภาพ
+
                 $profileImages = [
                     "./image/profile01.png",
                     "./image/profile02.png",
@@ -269,14 +260,13 @@ $conn->close();
                 ];
 
                 if (count($reviews) > 0):
-                    $i = 0; // ตัวแปร index สำหรับเลือกภาพ
+                    $i = 0;
                 ?>
                     <?php foreach ($reviews as $review): ?>
                         <div class="review-box">
                             <div class="rw-box-top">
                                 <div class="rw-profile">
                                     <div class="rw-profile-img">
-                                        <!-- ใช้ modulus (%) เพื่อเลือกภาพวนซ้ำ -->
                                         <img src="<?= $profileImages[$i % count($profileImages)]; ?>">
                                     </div>
                                     <div class="name-user">
@@ -294,7 +284,7 @@ $conn->close();
                                 <p><?= htmlspecialchars($review['Comment']); ?></p>
                             </div>
                         </div>
-                        <?php $i++; // เพิ่มค่าตัวแปร index 
+                        <?php $i++;
                         ?>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -307,25 +297,11 @@ $conn->close();
             <div class="pb-3 m-0" style="justify-items: center;" data-aos="fade-up">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination pagination-dark p-0 m-0">
-                        <!-- <?php if ($currentPage > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link pev-btn" href="?PlaceID=<?= $placeID; ?>&page=<?= $currentPage - 1; ?> #reviewzone">&lt;</a>
-                                <span aria-hidden="true">&gt;</span>&gt;
-                            </li>
-                        <?php endif; ?> -->
-
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                             <li class="page-item <?= $i == $currentPage ? 'active' : ''; ?>">
                                 <a class="page-link" href="?PlaceID=<?= $placeID; ?>&page=<?= $i; ?>#reviewzone"><?= $i; ?></a>
                             </li>
                         <?php endfor; ?>
-
-                        <!-- <?php if ($currentPage < $totalPages): ?>
-                            <li class="page-item">
-                                <a class="page-link next-btn" href="?PlaceID=<?= $placeID; ?>&page=<?= $currentPage + 1; ?>#reviewzone">&gt;</a>
-                                <span aria-hidden="true">&lt;</span>
-                            </li>
-                        <?php endif; ?> -->
                     </ul>
                 </nav>
             </div>
@@ -353,11 +329,10 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script type="text/javascript" src="blog.js"></script>
-
     <script>
         AOS.init({
-            duration: 1000, // ระยะเวลาแอนิเมชันในมิลลิวินาที
-            once: true // เล่นเอฟเฟกต์ครั้งเดียว
+            duration: 1000,
+            once: true
         });
     </script>
 

@@ -1,11 +1,11 @@
 window.addEventListener("scroll", function () {
   let navbar = document.querySelector(".navbar");
   if (window.scrollY > 50) {
-    navbar.style.position = "fixed"; // ทำให้ navbar ล็อกอยู่ด้านบน
+    navbar.style.position = "fixed";
     navbar.style.top = "0";
   } else {
-    navbar.style.position = "absolute"; // กลับไปเป็น absolute ถ้าเลื่อนขึ้นไปด้านบน
-    navbar.style.backgroundColor = "transparent"; // คืนค่าโปร่งใส
+    navbar.style.position = "absolute";
+    navbar.style.backgroundColor = "transparent";
   }
 });
 
@@ -37,10 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const navbarCollapse = document.querySelector(".navbar-collapse");
 
   navbarToggler.addEventListener("click", () => {
-    // Toggle 'show' class for navbar-collapse
     navbarCollapse.classList.toggle("show");
 
-    // Apply or remove backdrop styles
     if (navbarCollapse.classList.contains("show")) {
       navbarCollapse.style.backgroundColor = "rgba(27, 40, 12, 0.7)";
       navbarCollapse.style.backdropFilter = "blur(15px)";
@@ -50,11 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Optionally: Close menu when clicking outside (optional)
   document.addEventListener("click", (event) => {
     if (
-      !navbarToggler.contains(event.target) && // Clicked outside toggler
-      !navbarCollapse.contains(event.target) // Clicked outside menu
+      !navbarToggler.contains(event.target) &&
+      !navbarCollapse.contains(event.target)
     ) {
       navbarCollapse.classList.remove("show");
       navbarCollapse.style.backgroundColor = "";
@@ -80,7 +77,6 @@ $(document).ready(function () {
     ResCarouselSize();
   });
 
-  //this function define the size of the items
   function ResCarouselSize() {
     var incno = 0;
     var dataItems = "data-items";
@@ -127,7 +123,6 @@ $(document).ready(function () {
     });
   }
 
-  //this function used to move the items
   function ResCarousel(e, el, s) {
     var leftBtn = ".leftLst";
     var rightBtn = ".rightLst";
@@ -159,7 +154,6 @@ $(document).ready(function () {
     );
   }
 
-  //It is used to get some elements from btn
   function click(ell, ee) {
     var Parent = "#" + $(ee).parent().attr("id");
     var slide = $(Parent).attr("data-slide");
@@ -168,18 +162,14 @@ $(document).ready(function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Get the current URL
   const currentPath = window.location.pathname
     .split("/")
     .pop()
     .replace(".php", "");
 
-  // Get all navbar links
   const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
 
-  // Loop through each link
   navLinks.forEach((link) => {
-    // Extract the href attribute and match it with the current path
     const linkPath = link
       .getAttribute("href")
       .split("/")
@@ -189,39 +179,32 @@ document.addEventListener("DOMContentLoaded", () => {
       linkPath === currentPath ||
       (currentPath === "" && linkPath === "index")
     ) {
-      // Add 'active' class if the path matches
       link.classList.add("active");
     } else {
-      // Remove 'active' class if the path does not match
       link.classList.remove("active");
     }
   });
 });
 
 $(document).ready(function () {
-  // ฟังก์ชันลบ modal backdrop
   function removeModalBackdrop() {
-    $(".modal-backdrop").remove(); // ลบ backdrop
-    $("body").removeClass("modal-open"); // ป้องกัน body ติด scroll-lock
+    $(".modal-backdrop").remove();
+    $("body").removeClass("modal-open");
   }
 
-  // จัดการปิด modal ทุกตัวให้ปิด backdrop ด้วย
   $(".modal").on("hidden.bs.modal", function () {
     removeModalBackdrop();
   });
 
-  // ปิด Modal และลบ backdrop เมื่อกดปุ่ม Close (X)
   $(".btn-close").click(function () {
-    $(this).closest(".modal").modal("hide"); // ปิด modal
-    setTimeout(removeModalBackdrop, 500); // ลบ backdrop หลังปิด modal
+    $(this).closest(".modal").modal("hide");
+    setTimeout(removeModalBackdrop, 500);
   });
 
-  // เมื่อคลิกปิด modal backdrop
   $(document).on("click", ".modal-backdrop", function () {
     removeModalBackdrop();
   });
 
-  // เปิด Modal ยืนยันตัวตน เมื่อกด Forgot Password
   $("#forgotPasswordBtn").click(function () {
     $("#staticBackdrop").modal("hide");
     setTimeout(() => {
@@ -229,7 +212,6 @@ $(document).ready(function () {
     }, 500);
   });
 
-  // ตรวจสอบข้อมูลในฐานข้อมูล
   $("#verifyAccountBtn").click(function () {
     var username = $("#verifyUsername").val();
     var email = $("#verifyEmail").val();
@@ -242,7 +224,7 @@ $(document).ready(function () {
     $.ajax({
       url: "check_user.php",
       type: "POST",
-      data: { UserName: username, Emails: email },
+      data: { username: username, email: email },
       success: function (response) {
         if (response === "not_found") {
           Swal.fire("Error", "User not found", "error");
@@ -308,8 +290,8 @@ $(document).ready(function () {
               ).then(() => {
                 $("#resetPasswordModal").modal("hide");
                 setTimeout(() => {
-                  removeModalBackdrop(); // ลบ backdrop
-                  location.reload(); // รีเฟรชหน้า
+                  removeModalBackdrop();
+                  location.reload();
                 }, 500);
               });
             } else {

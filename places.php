@@ -2,14 +2,13 @@
 session_start();
 include 'dataDB.php';
 
-// เก็บ URL ปัจจุบันใน session ก่อนที่จะแสดงฟอร์มล็อกอิน
+
 if (!isset($_SESSION['redirect_url'])) {
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 }
-// กำหนดค่าเริ่มต้นให้ resultType
+
 $resultType = [];
 
-// ดึงข้อมูลประเภทสถานที่
 $sqlType = "SELECT * FROM typeplace";
 $typeQuery = $conn->query($sqlType);
 if ($typeQuery->num_rows > 0) {
@@ -18,12 +17,11 @@ if ($typeQuery->num_rows > 0) {
     }
 }
 
-$itemsPerPage = 9; // จำนวนรายการต่อหน้า
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // หน้าปัจจุบัน
-$currentPage = max($currentPage, 1); // หน้าต้องไม่น้อยกว่า 1
-$offset = ($currentPage - 1) * $itemsPerPage; // คำนวณ OFFSET
+$itemsPerPage = 9;
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPage = max($currentPage, 1);
+$offset = ($currentPage - 1) * $itemsPerPage;
 
-// ตรวจสอบเงื่อนไขการค้นหา
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search = $conn->real_escape_string($_GET['search']);
     $sql = "
@@ -66,11 +64,8 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $countSql = "SELECT COUNT(*) AS total FROM places WHERE IsVisible = 1";
 }
 
-
-
 $result = $conn->query($sql);
 
-// คำนวณจำนวนหน้าทั้งหมด
 $countResult = $conn->query($countSql);
 $totalItems = $countResult->fetch_assoc()['total'];
 $totalPages = ceil($totalItems / $itemsPerPage);
@@ -81,7 +76,7 @@ if ($result->num_rows > 0) {
         $myplaces[] = $row;
     }
 }
-// คำนวณคะแนนรีวิวเฉลี่ย
+
 $placeReviews = [];
 foreach ($myplaces as $place) {
     $placeID = $place['PlaceID'];
@@ -89,10 +84,8 @@ foreach ($myplaces as $place) {
     $reviewResult = $conn->query($sqlReview);
     if ($reviewResult && $reviewRow = $reviewResult->fetch_assoc()) {
         if ($reviewRow['reviewCount'] > 0) {
-            // ถ้ามีรีวิว คำนวณค่าเฉลี่ย
             $placeReviews[$placeID] = round($reviewRow['avgRating'], 1);
         } else {
-            // ถ้าไม่มีรีวิวให้เก็บค่าพิเศษ
             $placeReviews[$placeID] = 0;
         }
     }
@@ -157,7 +150,6 @@ foreach ($myplaces as $place) {
                                     } ?>">
                                     <?= $place['TypeTitle'] ?>
                                 </a>
-
 
                             </div>
                         <?php endforeach; ?>
