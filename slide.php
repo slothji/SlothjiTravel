@@ -106,10 +106,8 @@
             const navbarCollapse = document.querySelector('.navbar-collapse');
 
             navbarToggler.addEventListener('click', () => {
-                // Toggle 'show' class for navbar-collapse
                 navbarCollapse.classList.toggle('show');
 
-                // Apply or remove backdrop styles
                 if (navbarCollapse.classList.contains('show')) {
                     navbarCollapse.style.backgroundColor = 'rgba(27, 40, 12, 0.7)';
                     navbarCollapse.style.backdropFilter = 'blur(15px)';
@@ -119,11 +117,10 @@
                 }
             });
 
-            // Optionally: Close menu when clicking outside (optional)
             document.addEventListener('click', (event) => {
                 if (
-                    !navbarToggler.contains(event.target) && // Clicked outside toggler
-                    !navbarCollapse.contains(event.target) // Clicked outside menu
+                    !navbarToggler.contains(event.target) &&
+                    !navbarCollapse.contains(event.target)
                 ) {
                     navbarCollapse.classList.remove('show');
                     navbarCollapse.style.backgroundColor = '';
@@ -153,7 +150,6 @@
                 ResCarouselSize();
             });
 
-            //this function define the size of the items
             function ResCarouselSize() {
                 var incno = 0;
                 var dataItems = ("data-items");
@@ -198,8 +194,6 @@
                 });
             }
 
-
-            //this function used to move the items
             function ResCarousel(e, el, s) {
                 var leftBtn = ('.leftLst');
                 var rightBtn = ('.rightLst');
@@ -228,7 +222,6 @@
                 $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
             }
 
-            //It is used to get some elements from btn
             function click(ell, ee) {
                 var Parent = "#" + $(ee).parent().attr("id");
                 var slide = $(Parent).attr("data-slide");

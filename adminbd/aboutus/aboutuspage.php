@@ -165,7 +165,6 @@ $aboutData = $result->fetch_assoc();
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
 

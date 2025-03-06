@@ -4,10 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const commentField = document.querySelector(".rating-comment");
   const submitButton = document.querySelector("#submitReview");
 
-  ratingValue.value = 0; // ตั้งค่าเริ่มต้นเป็น 0
+  ratingValue.value = 0;
   let rating = 0;
 
-  // ฟังก์ชันสำหรับอัปเดตเรตติ้ง
   function updateRatingDisplay() {
     console.log("Current rating: ", rating);
   }
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ratingValue.value = idx + 1;
       rating = ratingValue.value;
 
-      // อัปเดตการแสดงผลเมื่อคลิก
       updateRatingDisplay();
 
       allStar.forEach((s, i) => {
@@ -30,13 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ตรวจสอบและส่งข้อมูลเมื่อกดปุ่ม Submit
   submitButton.addEventListener("click", () => {
-    const comment = commentField.value.trim(); // ดึงค่าคอมเมนต์
+    const comment = commentField.value.trim();
     const placeID = document.querySelector("input[name='PlaceID']").value;
     const userID = document.querySelector("input[name='UserID']").value;
 
-    // ตรวจสอบข้อมูลก่อนส่ง
     if (!placeID || !userID || !rating || !comment) {
       if (!userID) {
         Swal.fire({
@@ -78,14 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
           Swal.fire({
             icon: "error",
             title: "Failed to Submit Review",
-            text: res.msg || "Something went wrong. Please try again.", // Use res.msg here
+            text: res.msg || "Something went wrong. Please try again.",
           });
         }
       },
     });
   });
 
-  // แสดงค่า rating เริ่มต้นที่ 0 เมื่อเริ่มต้น
   updateRatingDisplay();
   document.addEventListener("DOMContentLoaded", function () {
     if (window.location.hash && window.location.hash === "#reviewzone") {

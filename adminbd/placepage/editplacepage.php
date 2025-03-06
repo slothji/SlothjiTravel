@@ -1,17 +1,15 @@
 <?php
 session_start();
-include '../db.php'; // เชื่อมต่อฐานข้อมูล
+include '../db.php';
 require_once 'image_upload_helper.php';
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
 
-// ตรวจสอบ PlaceID
 if (isset($_GET['PlaceID'])) {
     $placeID = $_GET['PlaceID'];
 
-    // ดึงข้อมูลสถานที่จากฐานข้อมูล
     $sql = "SELECT * FROM places WHERE PlaceID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $placeID);
@@ -19,14 +17,12 @@ if (isset($_GET['PlaceID'])) {
     $result = $stmt->get_result();
 
 
-    // ดึงข้อมูลสถานที่จากฐานข้อมูลตาราง gallery
     $glsql = "SELECT * FROM gallery WHERE PlaceID = ?";
     $glstmt = $conn->prepare($glsql);
     $glstmt->bind_param("i", $placeID);
     $glstmt->execute();
     $glresult = $glstmt->get_result();
 
-    // ดึงข้อมูลภาพจากตาราง gallery
     $galleryImages = [];
     while ($galleryRow = $glresult->fetch_assoc()) {
         $galleryImages[] = [
@@ -37,7 +33,7 @@ if (isset($_GET['PlaceID'])) {
 
 
     if ($result->num_rows > 0) {
-        $place = $result->fetch_assoc(); // ดึงข้อมูลสถานที่
+        $place = $result->fetch_assoc();
     } else {
         echo "<script>alert('ไม่พบข้อมูลสถานที่นี้');</script>";
         exit();
@@ -47,7 +43,6 @@ if (isset($_GET['PlaceID'])) {
     exit();
 }
 
-// เมื่อผู้ใช้กดปุ่มบันทึกการแก้ไข
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $placeName = $_POST['place_name'];
     $placeTitle = $_POST['place_title'];
@@ -56,52 +51,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $placeLocation = $_POST['place_location'];
     $placeType = $_POST['place_type'];
 
-    // echo '<pre>';
-    // print_r($placeLocation);
-    // print_r($_POST);
-    // echo '</pre>';
-    // exit();
+
     if (empty($placeType)) {
         echo "<script>alert('กรุณาเลือกประเภทสถานที่');</script>";
         exit();
     }
 
-    // ตรวจสอบว่ามีการอัปโหลดรูปภาพใหม่หรือไม่
-    // เมื่อมีการอัปโหลดรูปภาพใหม่
     if (isset($_FILES['place_img']) && $_FILES['place_img']['error'] === 0) {
-        // ลบไฟล์รูปภาพเก่าก่อน (ถ้ามี)
-        $oldPlaceImg = $place['PlaceImg'];  // ดึงชื่อไฟล์เก่าจากฐานข้อมูล
-        $oldFilePath = 'uploads/places/' . $oldPlaceImg;  // สร้าง path ของไฟล์เก่า
+        $oldPlaceImg = $place['PlaceImg'];
+        $oldFilePath = 'uploads/places/' . $oldPlaceImg;
 
-        // ตรวจสอบว่าไฟล์เก่ามีอยู่จริงหรือไม่ แล้วทำการลบ
         if (file_exists($oldFilePath) && $oldPlaceImg != '') {
-            unlink($oldFilePath);  // ลบไฟล์รูปภาพเก่า
+            unlink($oldFilePath);
         }
 
-        // อัปโหลดรูปภาพใหม่
         $uploadResult = uploadImage($_FILES['place_img'], 'uploads/places/');
         if ($uploadResult['success']) {
-            $placeImg = $uploadResult['fileName'];  // ใช้ชื่อไฟล์ใหม่
+            $placeImg = $uploadResult['fileName'];
         } else {
             echo "<script>alert('Error uploading image: " . $uploadResult['error'] . "');</script>";
             exit();
         }
     } else {
-        $placeImg = $place['PlaceImg']; // ถ้าไม่มีการอัปโหลดรูปใหม่ ใช้รูปเดิม
+        $placeImg = $place['PlaceImg'];
     }
 
-
-    // อัปเดตข้อมูลในฐานข้อมูล
     $sql = "UPDATE places SET PlaceName = ?, PlaceImg = ?, PlaceTitle = ?, PlaceSubTitle = ?, PlaceDetail = ?, PlaceLocation = ?, TypeID = ? WHERE PlaceID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssssii", $placeName, $placeImg, $placeTitle, $placeSubtitle, $placeDetail, $placeLocation, $placeType, $placeID);
     echo '<pre>';
-    // print_r($_FILES['gallery_img']);
     echo '</pre>';
 
     if ($stmt->execute()) {
 
-        // ตรวจสอบว่ามีการอัปโหลดรูปภาพใน gallery หรือไม่
         if (isset($_FILES['gallery_img']) && $_FILES['gallery_img']['error'][0] === 0) {
             foreach ($_FILES['gallery_img']['name'] as $index => $fileName) {
                 if ($_FILES['gallery_img']['error'][$index] === 0) {
@@ -113,12 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'size' => $_FILES['gallery_img']['size'][$index]
                     ];
 
-                    // ส่งข้อมูลไฟล์ไปยังฟังก์ชัน uploadImage
                     $uploadResult = uploadImage($file, 'uploads/gallerys/');
                     if ($uploadResult['success']) {
                         $galleryImg = $uploadResult['fileName'];
 
-                        // บันทึกข้อมูลรูปภาพใน gallery
                         $sqlGallery = "INSERT INTO gallery (PlaceID, GalleryImg) VALUES (?, ?)";
                         $stmtGallery = $conn->prepare($sqlGallery);
                         $stmtGallery->bind_param("is", $placeID, $galleryImg);
@@ -149,14 +129,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 if (isset($_GET['delete_gallery_id'])) {
-    // เชื่อมต่อฐานข้อมูล
     include '../db.php';
 
-    // รับค่า GalleryID ที่จะลบ
     $galleryID = $_GET['delete_gallery_id'];
-    $placeID = $_GET['PlaceID'];  // รับ PlaceID เพื่อเชื่อมโยงกับการลบในแกลเลอรีที่ถูกต้อง
+    $placeID = $_GET['PlaceID'];
 
-    // ดึงชื่อไฟล์ภาพจากฐานข้อมูลก่อนลบ
     $sql = "SELECT GalleryImg FROM gallery WHERE GalleryID = ? AND PlaceID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $galleryID, $placeID);
@@ -168,12 +145,10 @@ if (isset($_GET['delete_gallery_id'])) {
         $galleryImg = $galleryRow['GalleryImg'];
         $filePath = 'uploads/gallerys/' . $galleryImg;
 
-        // ลบไฟล์จากเซิร์ฟเวอร์
         if (file_exists($filePath)) {
-            unlink($filePath);  // ลบไฟล์จากระบบ
+            unlink($filePath);
         }
 
-        // ลบข้อมูลจากฐานข้อมูล
         $sqlDelete = "DELETE FROM gallery WHERE GalleryID = ? AND PlaceID = ?";
         $stmtDelete = $conn->prepare($sqlDelete);
         $stmtDelete->bind_param("ii", $galleryID, $placeID);
@@ -297,7 +272,6 @@ while ($row = $typePlaceResult->fetch_assoc()) {
                             <img class="galleryImg" src="uploads/gallerys/<?php echo htmlspecialchars($gallery['GalleryImg']); ?>"
                                 alt="Gallery Image"
                                 style="width: 100px; height: 100px; object-fit: cover; margin: 5px; border: 1px solid #ddd; padding: 2px;">
-                            <!-- ปุ่มลบรูปภาพ -->
                             <a href="editplacepage.php?delete_gallery_id=<?php echo $gallery['GalleryID']; ?>&PlaceID=<?php echo $placeID; ?>"
                                 class="fa-solid fa-x delete-image"
                                 style="margin-right: 10px; color: red; font-size: 15px; font-weight: 600; cursor: pointer;"
@@ -310,9 +284,7 @@ while ($row = $typePlaceResult->fetch_assoc()) {
             </div>
 
             <div id="myModal" class="modal">
-                <!-- The Close Button -->
                 <span class="close">&times;</span>
-                <!-- Modal Content (The Image) -->
                 <img class="modal-content" id="img01">
                 <div id="caption"></div>
             </div>
@@ -320,8 +292,6 @@ while ($row = $typePlaceResult->fetch_assoc()) {
             <button type="submit" class="btn btn-primary mb-3">บันทึกการเปลี่ยนแปลง</button>
         </form>
     </div>
-
-
 
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -354,16 +324,16 @@ while ($row = $typePlaceResult->fetch_assoc()) {
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 
@@ -376,17 +346,11 @@ while ($row = $typePlaceResult->fetch_assoc()) {
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
                         nav.classList.toggle('show-slidbar')
-
-                        // change icon
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -394,7 +358,6 @@ while ($row = $typePlaceResult->fetch_assoc()) {
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -405,7 +368,6 @@ while ($row = $typePlaceResult->fetch_assoc()) {
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
 
@@ -421,7 +383,7 @@ while ($row = $typePlaceResult->fetch_assoc()) {
                     title: 'ชนิดไฟล์ไม่ถูกต้อง',
                     text: 'โปรดเลือกไฟล์ .jpg หรือ .png เท่านั้น',
                 });
-                fileInput.value = ''; // Clear the file input
+                fileInput.value = '';
             }
         }
     </script>
@@ -432,18 +394,16 @@ while ($row = $typePlaceResult->fetch_assoc()) {
             const files = fileInput.files;
             const allowedTypes = ['image/jpeg', 'image/png'];
 
-            // Loop through all selected files
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                // Check if the file type is not jpg or png
                 if (!allowedTypes.includes(file.type)) {
                     Swal.fire({
                         icon: 'error',
                         title: 'ชนิดไฟล์ไม่ถูกต้อง',
                         text: 'โปรดเลือกไฟล์ .jpg หรือ .png เท่านั้น',
                     });
-                    fileInput.value = ''; // Clear the file input
-                    return; // Stop further checks and exit the function
+                    fileInput.value = '';
+                    return;
                 }
             }
         }
@@ -472,7 +432,7 @@ while ($row = $typePlaceResult->fetch_assoc()) {
                 $('#gal').show();
                 const files = event.target.files;
                 const previewContainer = document.getElementById('gallery_preview');
-                previewContainer.innerHTML = ''; // Clear previous previews
+                previewContainer.innerHTML = '';
 
                 Array.from(files).forEach(file => {
                     const reader = new FileReader();
@@ -493,23 +453,20 @@ while ($row = $typePlaceResult->fetch_assoc()) {
 
 
     <script>
-        // Get all images in the gallery
         var images = document.querySelectorAll(".galleryImg");
         var modal = document.getElementById("myModal");
         var modalImg = document.getElementById("img01");
         var captionText = document.getElementById("caption");
         var span = document.getElementsByClassName("close")[0];
 
-        // Loop through all images to add click event
         images.forEach(function(img) {
             img.onclick = function() {
                 modal.style.display = "block";
                 modalImg.src = this.src;
-                captionText.innerHTML = this.alt || "Gallery Image"; // Fallback for alt text
+                captionText.innerHTML = this.alt || "Gallery Image";
             };
         });
 
-        // Close the modal when the close button is clicked
         span.onclick = function() {
             modal.style.display = "none";
         };

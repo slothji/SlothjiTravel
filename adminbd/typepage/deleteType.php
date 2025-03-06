@@ -2,21 +2,18 @@
 include '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id = $_POST['TypeID'] ?? null; // ตรวจสอบคีย์ 'TypeID'
-
+    $id = $_POST['TypeID'] ?? null;
     if (empty($id)) {
         echo "error: Missing TypeID";
         exit;
     }
 
-    // ลบข้อมูลจากตาราง visitcount ที่มี TypeID ตรงกัน
     $stmt = $conn->prepare("DELETE FROM visitcount WHERE TypeID = ?");
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
         $stmt->close();
 
-        // ลบข้อมูลจากตาราง typeplace หลังจากลบข้อมูลใน visitcount
         $stmt = $conn->prepare("DELETE FROM typeplace WHERE TypeID = ?");
         $stmt->bind_param("i", $id);
 

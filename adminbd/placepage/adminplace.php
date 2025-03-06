@@ -1,18 +1,16 @@
 <?php
 session_start();
 
-include '../db.php'; // รวมไฟล์ที่เชื่อมต่อฐานข้อมูล
+include '../db.php';
 
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
 
-// ดึงข้อมูลจากฐานข้อมูล
 $sql = "SELECT * FROM places ORDER BY PlaceNumbers ASC, PlaceName ASC";
 $stmt = $conn->query($sql);
 
-// ตรวจสอบการเชื่อมต่อฐานข้อมูล
 if (!$stmt) {
     die("Error: " . $conn->error);
 }
@@ -70,7 +68,7 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $num = 1; // เริ่มต้นการนับลำดับ
+                                    $num = 1;
                                     foreach ($places as $place) {
                                     ?>
                                         <tr>
@@ -142,7 +140,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                             <button id="sortPlacesBtn" class="btn btn-primary mb-3" style="float: right; margin-right: 100px;">จัดเรียง</button>
 
                         </div>
-                        <!-- Modal -->
                         <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -151,7 +148,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- แสดงแผนที่ -->
                                         <iframe id="mapFrame" src="" width="100%" height="400" style="border:0;" allowfullscreen=""></iframe>
                                     </div>
                                 </div>
@@ -163,7 +159,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
     </div>
-
 
     <script src=dashboardscript.js></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -182,16 +177,16 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 
@@ -204,17 +199,11 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
                         nav.classList.toggle('show-slidbar')
-
-                        // change icon
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -222,7 +211,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -233,7 +221,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
     <script>
@@ -241,7 +228,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
             $(document).on("click", ".toggle-map-modal", function() {
                 var mapUrl = $(this).data("url").trim();
 
-                // ตรวจสอบลิงก์แผนที่
                 if (!mapUrl || !mapUrl.startsWith("https://www.google.com/maps/embed")) {
                     alert("ลิงก์แผนที่ไม่ถูกต้อง!");
                     return;
@@ -251,7 +237,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                 $("#mapModal").modal("show");
             });
 
-            // รีเซ็ตแผนที่เมื่อปิด Modal
             $("#mapModal").on("hidden.bs.modal", function() {
                 $("#mapFrame").attr("src", "");
             });
@@ -267,7 +252,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                 "stateSave": true,
             });
 
-            // ✅ เลือก Checkbox ทั้งหมด
             $('#selectAll').on('click', function() {
                 var rows = table.rows({
                     search: 'applied'
@@ -275,12 +259,10 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                 $('input[type="checkbox"]', rows).prop('checked', this.checked);
             });
 
-            // ✅ ตรวจสอบสถานะ Checkbox
             $('#places tbody').on('change', '.delete-checkbox', function() {
                 $('#selectAll').prop('checked', $('.delete-checkbox:checked').length === $('.delete-checkbox').length);
             });
 
-            // ✅ กดปุ่ม "ลบหลายรายการ"
             $('#bulkDeleteToggle').on('click', function() {
                 var selectedIDs = $('.delete-checkbox:checked').map(function() {
                     return $(this).val();
@@ -313,9 +295,9 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                             data: {
                                 placeIDs: selectedIDs
                             },
-                            dataType: 'json', // 🛑 ต้องกำหนดว่าเป็น JSON
+                            dataType: 'json',
                             success: function(response) {
-                                console.log(response); // 🛠 ตรวจสอบค่าที่ส่งกลับมา
+                                console.log(response);
                                 if (response.success) {
                                     Swal.fire({
                                         icon: 'success',
@@ -352,7 +334,7 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
 
     <script>
         function confirmDelete(placeID) {
-            console.log("PlaceID: " + placeID); // ตรวจสอบ PlaceID
+            console.log("PlaceID: " + placeID);
 
             Swal.fire({
                 title: 'คุณแน่ใจหรือไม่?',
@@ -365,30 +347,25 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                 cancelButtonText: 'ยกเลิก'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // สร้าง URL ที่ส่งค่าเพียงค่าเดียว
                     const url = `deleteplace.php?PlaceID=${placeID}`;
 
-                    // เรียกฟังก์ชัน deleteplace.php โดยใช้ jQuery AJAX
                     $.ajax({
                         url: url,
-                        type: 'GET', // หรือ 'POST' หากต้องการส่งข้อมูล POST
-                        dataType: 'json', // กำหนดให้เป็น JSON
+                        type: 'GET',
+                        dataType: 'json',
                         success: function(data) {
-                            console.log(data); // ตรวจสอบข้อมูลที่ได้รับจากเซิร์ฟเวอร์
+                            console.log(data);
 
                             if (data.success) {
-                                // แสดง SweetAlert แจ้งเตือนการลบสำเร็จ
                                 Swal.fire({
                                     title: 'ลบข้อมูลสำเร็จ!',
                                     text: data.message,
                                     icon: 'success',
                                     confirmButtonText: 'ตกลง'
                                 }).then(() => {
-                                    // เมื่อกดตกลง, รีเฟรชหน้าไปที่ adminplace.php
                                     window.location.href = 'adminplace.php';
                                 });
                             } else {
-                                // แสดง SweetAlert เมื่อเกิดข้อผิดพลาด
                                 Swal.fire({
                                     title: 'เกิดข้อผิดพลาด!',
                                     text: data.message,
@@ -411,8 +388,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
             });
         }
     </script>
-
-
 
     <script>
         $("#sortPlacesBtn").click(function() {
@@ -441,7 +416,6 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
         });
     </script>
 
-    <!-- ซ่อน/แสดงข้อมูล -->
     <script>
         $(document).on("click", ".toggle-visibility", function() {
             const button = $(this);
@@ -462,12 +436,10 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
                 .then(data => {
                     console.log("Server Response:", data);
                     if (data.success) {
-                        // เปลี่ยนสีปุ่มและข้อความ
                         button.toggleClass("btn-success btn-secondary");
                         button.data("status", newStatus);
                         button.html(newStatus === 1 ? '<i class="fa-solid fa-eye"></i> แสดง' : '<i class="fa-solid fa-eye-slash"></i> ซ่อน');
 
-                        // แสดง SweetAlert แจ้งเตือน
                         Swal.fire({
                             title: "เปลี่ยนสถานะสำเร็จ!",
                             text: newStatus === 1 ? "สถานะถูกเปลี่ยนเป็น 'แสดง'" : "สถานะถูกเปลี่ยนเป็น 'ซ่อน'",
@@ -496,17 +468,16 @@ $places = $stmt->fetch_all(MYSQLI_ASSOC);
     </script>
     <script>
         function validateSortInput(input) {
-            let originalValue = input.defaultValue; // เก็บค่าเดิมก่อนแก้ไข
+            let originalValue = input.defaultValue;
             let value = input.value;
 
-            // Check if the value is not a number, or less than or equal to 0
             if (isNaN(value) || value <= 0) {
                 Swal.fire({
                     icon: "error",
                     title: "กรุณาใส่เฉพาะค่าที่เป็นเลข (ไม่รับค่าติดลบและ 0)",
                     showConfirmButton: true,
                 });
-                input.value = originalValue; // คืนค่ากลับเป็นค่าเดิม
+                input.value = originalValue;
             }
         }
     </script>

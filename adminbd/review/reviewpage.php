@@ -67,11 +67,9 @@ if (!isset($_SESSION['AdminUserName'])) {
                                         die("Error: " . $conn->error);
                                     }
 
-                                    // ดึงข้อมูลทั้งหมดในรูปแบบ associative array
                                     $review = $stmt->fetch_all(MYSQLI_ASSOC);
 
                                     foreach ($review as $view) {
-                                        // ใช้ $view['UserName'] และ $view['PlaceName'] ได้
                                     ?>
                                         <tr>
                                             <td class="text-center"><?php echo htmlspecialchars($view['ReviewID']); ?></td>
@@ -81,9 +79,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                                             <td><?php echo htmlspecialchars($view['Comment']); ?></td>
                                             <td><?php echo htmlspecialchars($view['ReviewDate']); ?></td>
                                             <td class="text-center">
-                                                <!-- <button class="btn btn-warning btn-sm edit-btn" data-id="<?php echo $view['ReviewID']; ?>" data-bs-toggle="modal" data-bs-target="#editModal">
-                                                    <i class="fa-solid fa-pen" style="color: #fff;"></i>
-                                                </button> -->
                                                 <button class="btn btn-danger btn-sm delete-btn" data-id="<?php echo $view['ReviewID']; ?>">
                                                     <i class="fa-solid fa-trash" style="color: #fff;"></i>
                                                 </button>
@@ -194,16 +189,16 @@ if (!isset($_SESSION['AdminUserName'])) {
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
     <script>
@@ -219,16 +214,11 @@ if (!isset($_SESSION['AdminUserName'])) {
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
                         nav.classList.toggle('show-slidbar')
-                        // change icon
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -236,7 +226,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -247,7 +236,6 @@ if (!isset($_SESSION['AdminUserName'])) {
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
 
@@ -257,7 +245,6 @@ if (!isset($_SESSION['AdminUserName'])) {
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const typeID = this.getAttribute('data-id');
-                    // Fetch the data for this TypeID (e.g., via AJAX) and fill the form
                     fetch(`getType.php?id=${typeID}`)
                         .then(response => response.json())
                         .then(data => {
@@ -270,7 +257,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                 });
             });
 
-            // Delete button functionality
             document.querySelectorAll('.delete-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     if (confirm('Are you sure you want to delete this item?')) {
@@ -298,12 +284,11 @@ if (!isset($_SESSION['AdminUserName'])) {
                 });
             });
 
-            // Submit edit form
             document.getElementById('editForm').addEventListener('submit', function(e) {
                 e.preventDefault();
 
                 const formData = new FormData(this);
-                console.log(...formData); // ตรวจสอบข้อมูลที่ถูกส่งไป
+                console.log(...formData);
 
                 fetch('editType.php', {
                         method: 'POST',
@@ -311,22 +296,21 @@ if (!isset($_SESSION['AdminUserName'])) {
                     })
                     .then(response => response.text())
                     .then(data => {
-                        console.log(data); // ดูข้อความที่ส่งกลับจากเซิร์ฟเวอร์
+                        console.log(data);
                         if (data === 'success') {
                             alert('Item updated successfully!');
                             location.reload();
                         } else {
                             alert('Item updated successfully!');
-                            location.reload(); // แสดงข้อความ Error จากเซิร์ฟเวอร์
+                            location.reload();
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error); // แสดง Error ใน Console
+                        console.error('Error:', error);
                         alert('An unexpected error occurred.');
                     });
             });
 
-            // add items
             document.getElementById('submitAdd').addEventListener('click', function() {
                 const formData = new FormData();
                 formData.append('TypeTitle', document.getElementById('addTypeTitle').value);

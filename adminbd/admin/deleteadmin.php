@@ -1,13 +1,11 @@
 <?php
 include '../db.php';
 
-header('Content-Type: application/json'); // กำหนดให้ส่ง JSON กลับ
+header('Content-Type: application/json');
 
-// ตรวจสอบค่าที่ส่งมาผ่าน AJAX
 if (isset($_POST['AdminID'])) {
     $adminID = $_POST['AdminID'];
 
-    // คำสั่ง SQL เพื่อลบแอดมิน
     $stmt = $conn->prepare("DELETE FROM admins WHERE AdminID = ?");
     $stmt->bind_param("i", $adminID);
     $stmt->execute();

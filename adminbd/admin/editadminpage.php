@@ -1,15 +1,13 @@
 <?php
 session_start();
-include '../db.php'; // เชื่อมต่อฐานข้อมูล
+include '../db.php';
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
-// ตรวจสอบว่ามีการส่งค่า AdminID มาหรือไม่
 if (isset($_GET['AdminID'])) {
     $AdminID = $_GET['AdminID'];
 
-    // ดึงข้อมูลปัจจุบันจากฐานข้อมูล
     $sql = "SELECT * FROM admins WHERE AdminID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $AdminID);
@@ -17,7 +15,7 @@ if (isset($_GET['AdminID'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $Admin = $result->fetch_assoc(); // ดึงข้อมูลจากฐานข้อมูล
+        $Admin = $result->fetch_assoc();
     } else {
         echo "ไม่พบข้อมูลบัญชีนี้";
         exit();
@@ -27,14 +25,11 @@ if (isset($_GET['AdminID'])) {
     exit();
 }
 
-// เมื่อผู้ใช้ส่งข้อมูลแก้ไข
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // รับข้อมูลที่แก้ไขจากฟอร์ม
     $AdminUserName = $_POST['admin_username'];
     $AdminPassword = $_POST['admin_password'];
     $AdminEmail = $_POST['admin_email'];
 
-    // ตรวจสอบว่าชื่อผู้ใช้ซ้ำกับชื่อผู้ใช้ในฐานข้อมูลหรือไม่
     $sqlCheck = "SELECT * FROM admins WHERE AdminUserName = ? AND AdminID != ?";
     $stmtCheck = $conn->prepare($sqlCheck);
     $stmtCheck->bind_param("si", $AdminUserName, $AdminID);
@@ -42,31 +37,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $resultCheck = $stmtCheck->get_result();
 
     if ($resultCheck->num_rows > 0) {
-        // ถ้าชื่อผู้ใช้ซ้ำ
-        $_SESSION['username_error'] = 'duplicate'; // ตั้งค่าผลลัพธ์ว่าเจอชื่อซ้ำ
-        header("Location: editadminpage.php?AdminID=" . $AdminID); // กลับไปยังหน้าแก้ไขพร้อมแจ้งเตือน
+
+        $_SESSION['username_error'] = 'duplicate';
+        header("Location: editadminpage.php?AdminID=" . $AdminID);
         exit();
     }
 
-    // อัปเดตข้อมูลในฐานข้อมูล
     if (!empty($AdminPassword)) {
-        // ถ้ามีการป้อนรหัสผ่านใหม่ -> ทำการแฮชรหัสผ่าน
         $hashedPassword = password_hash($AdminPassword, PASSWORD_DEFAULT);
         $sql = "UPDATE admins SET AdminUserName = ?, AdminPassword = ?, AdminEmail = ? WHERE AdminID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssi", $AdminUserName, $hashedPassword, $AdminEmail, $AdminID);
     } else {
-        // ถ้าไม่มีการป้อนรหัสผ่านใหม่ -> ไม่อัปเดตรหัสผ่าน
         $sql = "UPDATE admins SET AdminUserName = ?, AdminEmail = ? WHERE AdminID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $AdminUserName, $AdminEmail, $AdminID);
     }
 
     if ($stmt->execute()) {
-        // อัปเดตสำเร็จ -> ตั้งค่า session เพื่อแจ้งผล
         $_SESSION['update_success'] = true;
 
-        header("Location: adminpage.php"); // เปลี่ยนไปที่หน้า adminpage.php
+        header("Location: adminpage.php");
         exit();
     } else {
         echo "เกิดข้อผิดพลาดในการแก้ไขข้อมูล: " . $stmt->error;
@@ -100,8 +91,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body id="body-pd">
     <?php include 'sidebar.php' ?>
 
-    <!-- <p class="bold"><?php echo htmlspecialchars($_SESSION['AdminUserName']); ?></p> -->
-    <!--Container Main start-->
     <div class="container height-100 bg-light">
         <h1>การแก้ไขข้อมูล</h1>
         <form action="editadminpage.php?AdminID=<?php echo $AdminID; ?>" method="POST" id="editForm">
@@ -157,16 +146,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 
@@ -195,17 +184,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
                         nav.classList.toggle('show-slidbar')
-
-                        // change icon
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -213,7 +196,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -224,12 +206,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // ตรวจสอบค่าที่ส่งมาจาก PHP สำหรับชื่อผู้ใช้ซ้ำ
             <?php if (isset($_SESSION['username_error']) && $_SESSION['username_error'] == 'duplicate') { ?>
                 Swal.fire({
                     icon: 'error',
@@ -237,17 +217,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     text: 'กรุณาเปลี่ยนชื่อผู้ใช้',
                     confirmButtonText: 'ตกลง'
                 });
-                <?php unset($_SESSION['username_error']); // ลบ session หลังจากแสดงข้อความแล้ว 
+                <?php unset($_SESSION['username_error']);
                 ?>
             <?php } else { ?>
-                // ถ้าไม่มีข้อผิดพลาดชื่อซ้ำ ให้แสดงการยืนยันการแก้ไข
                 document.getElementById("editForm").addEventListener("submit", function(event) {
-                    event.preventDefault(); // หยุดการส่งฟอร์มก่อน
-                    confirmEdit(); // เรียกฟังก์ชันการยืนยันการแก้ไข
+                    event.preventDefault();
+                    confirmEdit();
                 });
             <?php } ?>
 
-            // ตรวจสอบผลการอัปเดตข้อมูล
             <?php if (isset($_SESSION['update_success']) && $_SESSION['update_success'] == true) { ?>
                 Swal.fire({
                     icon: 'success',
@@ -255,14 +233,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     text: 'ข้อมูลของคุณได้รับการอัปเดตแล้ว',
                     confirmButtonText: 'ตกลง'
                 }).then(() => {
-                    window.location.href = "adminpage.php"; // เปลี่ยนไปที่หน้า adminpage.php
+                    window.location.href = "adminpage.php";
                 });
-                <?php unset($_SESSION['update_success']); // ลบ session หลังจากแสดงข้อความแล้ว 
+                <?php unset($_SESSION['update_success']);
                 ?>
             <?php } ?>
         });
 
-        // ฟังก์ชันยืนยันการแก้ไข
         function confirmEdit() {
             Swal.fire({
                 title: "คุณแน่ใจหรือไม่?",
@@ -273,7 +250,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 cancelButtonText: "ไม่, ยกเลิก"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // ส่งฟอร์มไปที่เซิร์ฟเวอร์
                     document.getElementById("editForm").submit();
                 }
             });

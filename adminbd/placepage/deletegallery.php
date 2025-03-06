@@ -1,13 +1,11 @@
 <?php
-include '../db.php'; // เชื่อมต่อฐานข้อมูล
+include '../db.php';
 
-// ตรวจสอบคำขอ
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['galleryID'])) {
     $galleryID = $data['galleryID'];
 
-    // ดึงชื่อไฟล์จากฐานข้อมูลเพื่อลบไฟล์
     $sql = "SELECT GalleryImg FROM gallery WHERE GalleryID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $galleryID);
@@ -18,7 +16,6 @@ if (isset($data['galleryID'])) {
         $row = $result->fetch_assoc();
         $filePath = '../uploads/gallerys/' . $row['GalleryImg'];
 
-        // ลบไฟล์ในเซิร์ฟเวอร์
         if (file_exists($filePath)) {
             if (unlink($filePath)) {
                 echo "ลบไฟล์ $filePath สำเร็จ";
@@ -27,7 +24,6 @@ if (isset($data['galleryID'])) {
             }
         }
 
-        // ลบข้อมูลในฐานข้อมูล
         $deleteSQL = "DELETE FROM gallery WHERE GalleryID = ?";
         $deleteStmt = $conn->prepare($deleteSQL);
         $deleteStmt->bind_param("i", $galleryID);

@@ -2,7 +2,7 @@
 session_start();
 include '../db.php';
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
 ?>
@@ -57,8 +57,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                                     if (!$stmt) {
                                         die("Error: " . $conn->error);
                                     }
-                                    // You don't need to call execute() here
-                                    $homeslide = $stmt->fetch_all(MYSQLI_ASSOC); // Use fetch_all for an array of results
+                                    $homeslide = $stmt->fetch_all(MYSQLI_ASSOC);
                                     foreach ($homeslide as $slide) {
                                     ?>
                                         <tr>

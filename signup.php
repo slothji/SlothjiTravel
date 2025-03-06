@@ -1,17 +1,16 @@
 <?php
-include 'dataDB.php'; // เชื่อมต่อฐานข้อมูล
+include 'dataDB.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['UserName']);
     $email = trim($_POST['Emails']);
     $password = password_hash($_POST['Passwords'], PASSWORD_DEFAULT);
 
-    // ตรวจสอบว่า Google reCAPTCHA ได้ถูกเลือกหรือไม่
     if (isset($_POST['g-recaptcha-response'])) {
         $recaptchaResponse = $_POST['g-recaptcha-response'];
-        $secretKey = "6LeR9eQqAAAAACW2Hk0hZ9OOhV5ESp3qzQXGCl_F"; // ใส่ Secret Key ที่ได้จาก Google reCAPTCHA
+        $secretKey = "6LeR9eQqAAAAACW2Hk0hZ9OOhV5ESp3qzQXGCl_F";
 
-        // ส่งคำขอไปตรวจสอบกับ Google
+
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $data = [
             'secret' => $secretKey,
@@ -30,9 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $verify = file_get_contents($url, false, $context);
         $captchaSuccess = json_decode($verify);
 
-        // ตรวจสอบว่า reCAPTCHA ผ่านหรือไม่
         if ($captchaSuccess->success) {
-            // เช็คว่าชื่อผู้ใช้หรืออีเมลซ้ำหรือไม่
             $checkSql = "SELECT * FROM users WHERE UserName = ? ";
             $stmtCheck = $conn->prepare($checkSql);
             $stmtCheck->bind_param("s", $username);
@@ -40,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $result = $stmtCheck->get_result();
 
             if ($result->num_rows > 0) {
-                // พบว่ามีข้อมูลซ้ำ
                 echo '1';
                 echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
                 echo "<script>
@@ -54,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     });
                 </script>";
             } else {
-                // ไม่พบข้อมูลซ้ำ สามารถสมัครได้
                 $stmtCheck->close();
 
                 $sql = "INSERT INTO users (UserName, Emails, Passwords) VALUES (?, ?, ?)";
@@ -89,7 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->close();
             }
         } else {
-            // reCAPTCHA ไม่ผ่าน
             echo '4';
             echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
             echo "<script>

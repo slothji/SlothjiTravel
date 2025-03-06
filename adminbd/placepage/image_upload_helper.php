@@ -4,7 +4,6 @@ function uploadImage($file, $uploadDir)
     $allowedTypes = ['image/jpeg', 'image/png'];
     $maxSize = 5 * 1024 * 1024; // 5MB
 
-    // ตรวจสอบว่า $file เป็นอาร์เรย์ของหลายไฟล์หรือไม่
     if (is_array($file['name'])) {
         $fileCount = count($file['name']);
         $results = [];
@@ -18,14 +17,12 @@ function uploadImage($file, $uploadDir)
                 'size' => $file['size'][$i]
             ];
 
-            // เรียกใช้ฟังก์ชัน uploadImage สำหรับแต่ละไฟล์
             $uploadResult = uploadSingleImage($singleFile, $uploadDir);
             $results[] = $uploadResult;
         }
 
         return $results;
     } else {
-        // อัปโหลดไฟล์เดียว
         return uploadSingleImage($file, $uploadDir);
     }
 }
@@ -33,7 +30,7 @@ function uploadImage($file, $uploadDir)
 function uploadSingleImage($file, $uploadDir)
 {
     $allowedTypes = ['image/jpeg', 'image/png'];
-    $maxSize = 5 * 1024 * 1024; // 5MB ขนาดรูปที่รับได้
+    $maxSize = 5 * 1024 * 1024;
 
     // ตรวจสอบการอัปโหลดไฟล์
     if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -44,7 +41,7 @@ function uploadSingleImage($file, $uploadDir)
     $fileType = $file['type'];
     $fileSize = $file['size'];
     $tmpName = $file['tmp_name'];
-    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);  // ตรวจสอบ pathinfo ให้ถูกต้อง
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
 
     if (!in_array($fileType, $allowedTypes)) {
         return ['success' => false, 'error' => 'Invalid file type.'];

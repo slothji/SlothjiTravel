@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // เชื่อมต่อฐานข้อมูล
+include 'db.php';
 
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $month = isset($_GET['month']) ? intval($_GET['month']) : '';
@@ -32,7 +32,6 @@ $sqlTopType = "SELECT t.TypeTitle, SUM(v.VisitCount) AS TotalVisits
 $resultTopType = $conn->query($sqlTopType);
 $topType = $resultTopType->fetch_assoc() ?: ["TypeTitle" => "ไม่มีข้อมูล", "TotalVisits" => 0];
 
-// ส่งข้อมูลกลับไปเป็น JSON
 echo json_encode([
     "visitCount" => $totalVisits,
     "loginCount" => $totalLogins,

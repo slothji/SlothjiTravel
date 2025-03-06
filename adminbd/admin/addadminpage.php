@@ -50,8 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ob_end_flush();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,11 +73,6 @@ ob_end_flush();
 <body id="body-pd">
     <?php include 'sidebar.php'; ?>
 
-
-
-
-    <!-- <p class="bold"><?php echo htmlspecialchars($_SESSION['AdminUserName']); ?></p> -->
-    <!--Container Main start-->
     <div class="container height-100 bg-light">
         <h1>การเพิ่มข้อมูล Admin</h1>
         <form id="addAdminForm" action="addadminpage.php" method="POST">
@@ -106,9 +99,6 @@ ob_end_flush();
         </form>
 
     </div>
-
-
-
 
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -141,16 +131,16 @@ ob_end_flush();
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "../adminlogin/adminlogin.php";
                     });
-                }, 30 * 60 * 1000); // 30 นาที
+                }, 30 * 60 * 1000);
             }
 
             document.addEventListener("mousemove", resetTimer);
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 
@@ -181,7 +171,7 @@ ob_end_flush();
                 }).then(() => {
                     window.location.href = 'adminpage.php';
                 });
-                <?php unset($_SESSION['old_input']); ?> // ล้างค่าเมื่อสำเร็จ
+                <?php unset($_SESSION['old_input']); ?>
             <?php elseif (isset($_SESSION['status']) && $_SESSION['status'] === 'error'): ?>
                 Swal.fire({
                     icon: 'error',

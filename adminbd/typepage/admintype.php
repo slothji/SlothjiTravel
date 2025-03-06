@@ -2,7 +2,7 @@
 session_start();
 include '../db.php';
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ../adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ../adminlogin/adminlogin.php");
     exit();
 }
 ?>
@@ -55,8 +55,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                                     if (!$stmt) {
                                         die("Error: " . $conn->error);
                                     }
-                                    // You don't need to call execute() here
-                                    $typeplace = $stmt->fetch_all(MYSQLI_ASSOC); // Use fetch_all for an array of results
+                                    $typeplace = $stmt->fetch_all(MYSQLI_ASSOC);
                                     foreach ($typeplace as $type) {
                                     ?>
                                         <tr>
@@ -196,7 +195,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                 }, 30 * 60 * 1000); // 30 นาที
             }
 
-            // ตรวจจับทุก Event ที่เกี่ยวกับการใช้งานของผู้ใช้
             ["mousemove", "keypress", "click", "scroll", "touchstart"].forEach(event => {
                 document.addEventListener(event, resetTimer);
             });
@@ -223,7 +221,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                     title: 'ชนิดไฟล์ไม่ถูกต้อง',
                     text: 'โปรดเลือกไฟล์ .jpg หรือ .png เท่านั้น',
                 });
-                fileInput.value = ''; // ล้างค่า input
+                fileInput.value = '';
                 return;
             }
 
@@ -288,7 +286,6 @@ if (!isset($_SESSION['AdminUserName'])) {
         });
     </script>
 
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const showNavbar = (toggleId, navId, bodyId, headerId) => {
@@ -320,7 +317,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // ปุ่มแก้ไขข้อมูล
             document.querySelectorAll(".edit-btn").forEach(btn => {
                 btn.addEventListener("click", function() {
                     const typeID = this.getAttribute("data-id");
@@ -343,7 +339,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                 });
             });
 
-            // ปุ่มลบข้อมูล
             document.querySelectorAll(".delete-btn").forEach(button => {
                 button.addEventListener("click", function() {
                     Swal.fire({
@@ -379,7 +374,6 @@ if (!isset($_SESSION['AdminUserName'])) {
                 });
             });
 
-            // ฟอร์มแก้ไขข้อมูล
             document.getElementById("editForm").addEventListener("submit", function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
@@ -391,10 +385,8 @@ if (!isset($_SESSION['AdminUserName'])) {
                     .then(response => response.text())
                     .then(data => {
                         if (data.trim() === "success") {
-                            // ปิด Modal ก่อน
                             $("#editModal").modal("hide");
 
-                            // รอให้ Modal ปิดก่อนแล้วค่อยแสดง SweetAlert
                             setTimeout(() => {
                                 Swal.fire("แก้ไขสำเร็จ!", "", "success").then(() => location.reload());
                             }, 300);
@@ -409,7 +401,6 @@ if (!isset($_SESSION['AdminUserName'])) {
             });
 
 
-            // ปุ่มเพิ่มข้อมูล
             document.getElementById("submitAdd").addEventListener("click", function() {
                 const formData = new FormData();
                 formData.append("TypeTitle", document.getElementById("addTypeTitle").value);
@@ -423,10 +414,8 @@ if (!isset($_SESSION['AdminUserName'])) {
                     .then(response => response.text())
                     .then(data => {
                         if (data.trim() === "success") {
-                            // ปิด Modal ก่อน
                             $("#addModal").modal("hide");
 
-                            // รอให้ Modal ปิดก่อนแล้วค่อยแสดง SweetAlert
                             setTimeout(() => {
                                 Swal.fire({
                                     icon: "success",

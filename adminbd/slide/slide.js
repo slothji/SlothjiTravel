@@ -12,16 +12,16 @@ document.addEventListener("DOMContentLoaded", function () {
         text: "กรุณา login ใหม่",
         confirmButtonText: "ตกลง",
       }).then(() => {
-        window.location.href = "../adminlogin/adminlogin.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+        window.location.href = "../adminlogin/adminlogin.php";
       });
-    }, 30 * 60 * 1000); // 30 นาที
+    }, 30 * 60 * 1000);
   }
 
   document.addEventListener("mousemove", resetTimer);
   document.addEventListener("keypress", resetTimer);
   document.addEventListener("click", resetTimer);
 
-  resetTimer(); // เริ่มต้นการนับเวลา
+  resetTimer();
 });
 
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -31,16 +31,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
       bodypd = document.getElementById(bodyId),
       headerpd = document.getElementById(headerId);
 
-    // Validate that all variables exist
     if (toggle && nav && bodypd && headerpd) {
       toggle.addEventListener("click", () => {
-        // show navbar
         nav.classList.toggle("show-slidbar");
-        // change icon
         toggle.classList.toggle("bx-x");
-        // add padding to body
         bodypd.classList.toggle("body-pd");
-        // add padding to header
         headerpd.classList.toggle("body-pd");
       });
     }
@@ -48,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   showNavbar("header-toggle", "nav-bar", "body-pd", "header");
 
-  /*===== LINK ACTIVE =====*/
   const linkColor = document.querySelectorAll(".nav_link");
 
   function colorLink() {
@@ -58,8 +52,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   linkColor.forEach((l) => l.addEventListener("click", colorLink));
-
-  // Your code to run since DOM is loaded and ready
 });
 
 function validateImage(inputId) {
@@ -72,7 +64,7 @@ function validateImage(inputId) {
   if (!allowedTypes.includes(file.type)) {
     let modalId = inputId === "addHomeImg" ? "addModal" : "editModal";
     let modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-    modal.hide(); // ปิด Modal ก่อนแสดง SweetAlert
+    modal.hide();
 
     Swal.fire(
       "ไฟล์ไม่รองรับ",
@@ -121,12 +113,10 @@ function resizeImage(
         type: "image/jpeg",
       });
 
-      // ✅ อัปเดต input file ให้เป็นไฟล์ที่ถูกปรับขนาดแล้ว
       let dataTransfer = new DataTransfer();
       dataTransfer.items.add(resizedFile);
       fileInput.files = dataTransfer.files;
 
-      // ✅ แสดงตัวอย่างภาพที่ถูกปรับขนาด
       previewImage(resizedFile, inputId);
     },
     "image/jpeg",
@@ -148,7 +138,6 @@ function previewImage(file, inputId) {
 
 // add items
 $(document).ready(function () {
-  // แสดงรูปตัวอย่างเมื่ออัปโหลด
   $("#addHomeImg").change(function () {
     let reader = new FileReader();
     reader.onload = function (e) {
@@ -157,19 +146,18 @@ $(document).ready(function () {
     reader.readAsDataURL(this.files[0]);
   });
 
-  // ส่งข้อมูลไปเพิ่มในฐานข้อมูล
   $("#addSlideForm").submit(function (e) {
     e.preventDefault();
     let formData = new FormData(this);
 
     $.ajax({
-      url: "addSlide.php", // เปลี่ยนเป็นไฟล์ PHP ที่ใช้บันทึกข้อมูล
+      url: "addSlide.php",
       type: "POST",
       data: formData,
       contentType: false,
       processData: false,
       success: function (response) {
-        $("#addModal").modal("hide"); // ซ่อน Modal ก่อน
+        $("#addModal").modal("hide");
         setTimeout(() => {
           Swal.fire({
             title: "เพิ่มสไลด์สำเร็จ!",
@@ -177,9 +165,9 @@ $(document).ready(function () {
             icon: "success",
             confirmButtonText: "ตกลง",
           }).then(() => {
-            location.reload(); // รีเฟรชหน้าเพื่อแสดงข้อมูลใหม่
+            location.reload();
           });
-        }, 500); // หน่วงเวลาให้ Modal ปิดก่อน Swal แสดง
+        }, 500);
       },
       error: function () {
         Swal.fire("เกิดข้อผิดพลาด!", "กรุณาลองใหม่อีกครั้ง", "error");
@@ -221,13 +209,13 @@ $(document).ready(function () {
     let formData = new FormData(this);
 
     $.ajax({
-      url: "editSlide.php", // เปลี่ยนเป็นไฟล์ PHP ที่ใช้บันทึกการแก้ไข
+      url: "editSlide.php",
       type: "POST",
       data: formData,
       contentType: false,
       processData: false,
       success: function (response) {
-        $("#editModal").modal("hide"); // ซ่อน Modal ก่อน
+        $("#editModal").modal("hide");
         setTimeout(() => {
           Swal.fire({
             title: "แก้ไขสำเร็จ!",
@@ -235,9 +223,9 @@ $(document).ready(function () {
             icon: "success",
             confirmButtonText: "ตกลง",
           }).then(() => {
-            location.reload(); // รีเฟรชหน้าเพื่อแสดงข้อมูลใหม่
+            location.reload();
           });
-        }, 500); // ให้ Modal ปิดก่อน Swal แสดง
+        }, 500);
       },
       error: function () {
         Swal.fire("เกิดข้อผิดพลาด!", "กรุณาลองใหม่อีกครั้ง", "error");
@@ -249,7 +237,7 @@ $(document).ready(function () {
 $(document).on("click", ".delete-btn", function () {
   let homeID = $(this).data("id");
 
-  $("#editSlideModal, #addSlideModal").modal("hide"); // ปิด modal ที่เปิดอยู่
+  $("#editSlideModal, #addSlideModal").modal("hide");
   setTimeout(() => {
     Swal.fire({
       title: "ต้องการลบรูปนี้หรือไม่?",
@@ -307,7 +295,6 @@ $(document).on("click", ".slide-toggle-visibility", function () {
             : '<i class="fa-solid fa-eye-slash"></i> ซ่อน'
         );
 
-        // แสดง SweetAlert แจ้งเตือน
         Swal.fire({
           title: "เปลี่ยนสถานะสำเร็จ!",
           text:
@@ -338,17 +325,16 @@ $(document).on("click", ".slide-toggle-visibility", function () {
 });
 
 function validateSortInput(input) {
-  let originalValue = input.defaultValue; // เก็บค่าเดิมก่อนแก้ไข
+  let originalValue = input.defaultValue;
   let value = input.value;
 
-  // Check if the value is not a number, or less than or equal to 0
   if (isNaN(value) || value <= 0) {
     Swal.fire({
       icon: "error",
       title: "กรุณาใส่เฉพาะค่าที่เป็นเลข (ไม่รับค่าติดลบและ 0)",
       showConfirmButton: true,
     });
-    input.value = originalValue; // คืนค่ากลับเป็นค่าเดิม
+    input.value = originalValue;
   }
 }
 

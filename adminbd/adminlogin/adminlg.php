@@ -3,22 +3,19 @@ session_start();
 include '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['AdminUserName']); // ป้องกัน SQL Injection
+    $username = mysqli_real_escape_string($conn, $_POST['AdminUserName']);
     $password = $_POST['AdminPassword'];
 
-    // ดึงข้อมูลจากตาราง admins โดยตรวจสอบ username
     $sql = "SELECT * FROM admins WHERE AdminUserName = '$username'";
     $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
 
-        // ตรวจสอบ password
-        if (password_verify($password, $user['AdminPassword'])) { // ตรวจสอบรหัสผ่าน
+        if (password_verify($password, $user['AdminPassword'])) {
             $_SESSION['AdminID'] = $user['AdminID'];
             $_SESSION['AdminUserName'] = $user['AdminUserName'];
 
-            // แสดง SweetAlert
             echo '1';
             echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
             echo '<script>

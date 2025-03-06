@@ -12,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeIDs'])) {
 
     $placeIDs_str = implode(',', array_map('intval', $placeIDs));
 
-    // ✅ 1. ลบไฟล์จาก places
     $sqlImg = "SELECT PlaceImg FROM places WHERE PlaceID IN ($placeIDs_str)";
     $resultImg = $conn->query($sqlImg);
     while ($row = $resultImg->fetch_assoc()) {
@@ -22,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeIDs'])) {
         }
     }
 
-    // ✅ 2. ลบไฟล์จาก gallery
     $sqlGallery = "SELECT GalleryImg FROM gallery WHERE PlaceID IN ($placeIDs_str)";
     $resultGallery = $conn->query($sqlGallery);
     while ($row = $resultGallery->fetch_assoc()) {
@@ -32,13 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['placeIDs'])) {
         }
     }
 
-    // ✅ 3. ลบข้อมูลจากตาราง gallery
     $conn->query("DELETE FROM gallery WHERE PlaceID IN ($placeIDs_str)");
 
-    // ✅ 4. ลบข้อมูลจากตาราง places
     $deleteSuccess = $conn->query("DELETE FROM places WHERE PlaceID IN ($placeIDs_str)");
 
-    // 🛑 **ล้าง Output ก่อนส่ง JSON**
     ob_clean();
     header('Content-Type: application/json');
 

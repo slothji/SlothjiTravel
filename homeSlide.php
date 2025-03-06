@@ -1,10 +1,9 @@
 <?php
-include 'dataDB.php'; // เชื่อมต่อฐานข้อมูล
+include 'dataDB.php';
 
 $sql = "SELECT HomeImg, HomeStatus FROM homeslide ORDER BY HomeSort ASC";
 $result = mysqli_query($conn, $sql);
 
-// ตรวจสอบว่ามีข้อมูลหรือไม่
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         $status = $row['HomeStatus'] === 'active' ? 'active' : '';

@@ -8,21 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const startDateInput = document.getElementById("startDate");
   const endDateInput = document.getElementById("endDate");
 
-  let currentFilter = "all"; // ค่าปัจจุบันที่เลือก
+  let currentFilter = "all";
 
   // ตั้งค่าสำหรับฟิลด์วันที่ให้เลือกได้แค่ถึงวันนี้
-  const today = new Date().toISOString().split("T")[0]; // ได้วันที่ในรูปแบบ YYYY-MM-DD
-  startDateInput.setAttribute("max", today); // จำกัดไม่ให้เลือกวันในอนาคต
-  endDateInput.setAttribute("max", today); // จำกัดไม่ให้เลือกวันในอนาคต
+  const today = new Date().toISOString().split("T")[0];
+  startDateInput.setAttribute("max", today);
+  endDateInput.setAttribute("max", today);
 
-  // ✅ 1. เมื่อกดปุ่มกรอง (รวมทั้งหมด, รายเดือน, รายวัน, รายปี, ช่วงวัน)
   filterButtons.forEach((button) => {
     button.addEventListener("click", function () {
       filterButtons.forEach((btn) => btn.classList.remove("active"));
       this.classList.add("active");
       currentFilter = this.getAttribute("data-filter");
 
-      // แสดง/ซ่อนตัวเลือกเดือนและวันที่
       if (currentFilter === "monthly") {
         monthSelector.style.display = "block";
         dateInput.style.display = "none";
@@ -44,24 +42,21 @@ document.addEventListener("DOMContentLoaded", function () {
         yearSelector.style.display = "none";
         dateRangeContainer.style.display = "block";
       } else {
-        // กรณี "รวมทั้งหมด"
         monthSelector.style.display = "none";
         dateInput.style.display = "none";
         yearSelector.style.display = "none";
         dateRangeContainer.style.display = "none";
       }
 
-      fetchData(); // โหลดข้อมูลใหม่
+      fetchData();
     });
   });
 
-  // ✅ 2. เมื่อกดปุ่มค้นหา
   searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
     fetchData();
   });
 
-  // 3. โหลดข้อมูลใหม่ทั้งหมด
   function fetchData() {
     const month = monthSelector.value;
     const date = dateInput.value;
@@ -78,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
       endDate: endDate,
     });
 
-    // อัปเดตทุกส่วนของหน้า
     updateSection("visitAllCountSection", "fetchallvisitors.php", params);
     updateSection("visitCountChart", "fetchvisitchart.php", params);
     updateSection("visitCountSection", "fetchvisitcount.php", params);
@@ -90,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchData();
 });
 
-// Function to update a specific section (chart, table, etc.)
 function updateSection(sectionId, url, params) {
   fetch(`${url}?${params.toString()}`)
     .then((response) => response.json())
@@ -101,13 +94,11 @@ function updateSection(sectionId, url, params) {
         return;
       }
 
-      // ✅ 1. If it's the "visitCountChart" section, update the chart
       if (sectionId === "visitCountChart") {
         renderChart(data);
         return;
       }
 
-      // ✅ 2. If it's the "visitCountSection", update the visit count
       if (sectionId === "visitCountSection") {
         section.innerHTML = data.type
           ? `ประเภท: ${data.type} <br> จำนวนการเข้าชม: ${data.visitCount}`
@@ -115,7 +106,6 @@ function updateSection(sectionId, url, params) {
         return;
       }
 
-      // ✅ 3. If it's the "visitAllCountSection", show total visits
       if (sectionId === "visitAllCountSection") {
         section.innerHTML = data.totalVisits
           ? `จำนวนการเข้าชมทั้งหมด: ${data.totalVisits} ครั้ง`
@@ -123,7 +113,6 @@ function updateSection(sectionId, url, params) {
         return;
       }
 
-      // ✅ 4. If it's the "loginCountSection", show total logins
       if (sectionId === "loginCountSection") {
         section.innerHTML = data.totalLogins
           ? `จำนวนผู้เข้าสู่ระบบทั้งหมด: ${data.totalLogins}`
@@ -131,7 +120,6 @@ function updateSection(sectionId, url, params) {
         return;
       }
 
-      // ✅ 5. If it's the "topVisitedSection" or "topReviewedSection", display a table
       if (
         sectionId === "topVisitedSection" ||
         sectionId === "topReviewedSection"
@@ -192,7 +180,6 @@ function updateSection(sectionId, url, params) {
         return;
       }
 
-      // ✅ 6. Default text for sections not matched
       section.innerHTML = data;
     })
     .catch((error) =>
@@ -219,7 +206,7 @@ function renderChart(data) {
   let visitCounts = data.map((item) => item.TotalVisitCount);
 
   if (window.myChart) {
-    window.myChart.destroy(); // Remove old chart
+    window.myChart.destroy();
   }
 
   window.myChart = new Chart(ctx, {
@@ -239,17 +226,17 @@ function renderChart(data) {
         legend: { display: false },
 
         datalabels: {
-          anchor: "end", // ตำแหน่ง label (end = ด้านบนแท่ง)
-          align: "top", // ชิดด้านบนแท่ง
-          color: "#000", // สีข้อความ
+          anchor: "end",
+          align: "top",
+          color: "#000",
           font: {
             weight: "bold",
-            size: 14, // ขนาดตัวอักษร
+            size: 14,
           },
-          formatter: (value) => value, // แสดงค่าของแท่งกราฟ
+          formatter: (value) => value,
         },
       },
     },
-    plugins: [ChartDataLabels], // ใช้งาน plugin
+    plugins: [ChartDataLabels],
   });
 }

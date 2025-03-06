@@ -7,7 +7,6 @@ if (!empty($_FILES['HomeImg']['name'])) {
 
     $homeSort = $_POST['HomeSort'];
 
-    // ถ้าไม่ได้กำหนด HomeSort ให้เป็นลำดับสุดท้าย
     if (empty($homeSort)) {
         $result = $conn->query("SELECT MAX(HomeSort) AS maxSort FROM homeslide");
         $row = $result->fetch_assoc();

@@ -1,16 +1,13 @@
 <?php
 include 'dataDB.php';
 session_start();
-// เก็บ URL ปัจจุบันใน session ก่อนที่จะแสดงฟอร์มล็อกอิน
 if (!isset($_SESSION['redirect_url'])) {
   $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 }
-// ระบุชื่อของหน้า
 $page_name = "homepage";
-$datevisit = date('Y-m-d H:i:s'); // วันที่และเวลาปัจจุบัน
-$visit_date = date('Y-m-d'); // ใช้เป็นตัวแยกข้อมูลรายวัน
+$datevisit = date('Y-m-d H:i:s');
+$visit_date = date('Y-m-d');
 
-// ตรวจสอบว่ามีข้อมูลของวันนี้แล้วหรือไม่
 $count_sql = "SELECT VisitCount FROM allvisitors WHERE PageName = ? AND DATE(VisitDateTime) = ?";
 $stmt = $conn->prepare($count_sql);
 $stmt->bind_param("ss", $page_name, $visit_date);
@@ -18,7 +15,6 @@ $stmt->execute();
 $visitresult = $stmt->get_result();
 
 if ($visitresult->num_rows > 0) {
-  // ถ้ามีข้อมูลวันนี้แล้ว ให้เพิ่มจำนวนการเข้าชม
   $update_sql = "UPDATE allvisitors SET VisitCount = VisitCount + 1, VisitDateTime = ? 
                    WHERE PageName = ? AND DATE(VisitDateTime) = ?";
   $update_stmt = $conn->prepare($update_sql);
@@ -26,7 +22,6 @@ if ($visitresult->num_rows > 0) {
   $update_stmt->execute();
   $update_stmt->close();
 } else {
-  // ถ้ายังไม่มี ให้เพิ่มข้อมูลใหม่
   $insert_sql = "INSERT INTO allvisitors (PageName, VisitCount, VisitDateTime) VALUES (?, 1, ?)";
   $insert_stmt = $conn->prepare($insert_sql);
   $insert_stmt->bind_param("ss", $page_name, $datevisit);
@@ -228,8 +223,8 @@ if ($typeresult->num_rows > 0) {
   <script src="typeplace.js"></script>
   <script>
     AOS.init({
-      duration: 1000, // ระยะเวลาแอนิเมชันในมิลลิวินาที
-      once: true // เล่นเอฟเฟกต์ครั้งเดียว
+      duration: 1000,
+      once: true
     });
   </script>
 </body>

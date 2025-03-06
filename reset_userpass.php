@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ss", $newPassword, $username);
 
     if ($stmt->execute()) {
-        unset($_SESSION['verified_user']); // ลบ session หลังจากเปลี่ยนรหัสสำเร็จ
-        echo "success"; // ✅ ส่งค่า "success" เท่านั้น
+        unset($_SESSION['verified_user']);
+        echo "success";
     } else {
         echo "error";
     }

@@ -1,7 +1,6 @@
 <?php
 include 'db.php';
 
-// รับค่าตัวกรองจาก URL
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $month = isset($_GET['month']) ? intval($_GET['month']) : '';
 $date = isset($_GET['date']) ? $_GET['date'] : '';

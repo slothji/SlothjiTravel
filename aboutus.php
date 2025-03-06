@@ -113,9 +113,7 @@ if ($result->num_rows > 0) {
         }
       }
 
-
       handleOverflowScroll();
-
 
       window.addEventListener("resize", handleOverflowScroll);
     });

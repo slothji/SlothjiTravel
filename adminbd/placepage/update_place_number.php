@@ -1,5 +1,5 @@
 <?php
-require_once '../db.php'; // สำหรับเชื่อมต่อฐานข้อมูล
+require_once '../db.php';
 
 if (isset($_POST['sortData'])) {
     $sortData = json_decode($_POST['sortData'], true);

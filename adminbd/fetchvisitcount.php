@@ -1,17 +1,15 @@
 <?php
-// เชื่อมต่อฐานข้อมูล
-header('Content-Type: application/json; charset=utf-8'); // เปลี่ยนเป็น application/json
+header('Content-Type: application/json; charset=utf-8');
 require_once('db.php');
 
 // รับค่าตัวกรองจาก URL
-$filter = $_GET['filter'] ?? 'all'; // ค่า filter ที่ส่งมา
-$month = $_GET['month'] ?? null; // ค่าเดือนที่กรอง
-$date = $_GET['date'] ?? null; // ค่าวันที่ที่กรอง
-$year = $_GET['year'] ?? null; // ปีที่กรอง
-$startDate = $_GET['startDate'] ?? null; // วันที่เริ่มต้นช่วงวัน
-$endDate = $_GET['endDate'] ?? null; // วันที่สิ้นสุดช่วงวัน
+$filter = $_GET['filter'] ?? 'all';
+$month = $_GET['month'] ?? null;
+$date = $_GET['date'] ?? null;
+$year = $_GET['year'] ?? null;
+$startDate = $_GET['startDate'] ?? null;
+$endDate = $_GET['endDate'] ?? null;
 
-// สร้างเงื่อนไขสำหรับ SQL Query
 $whereConditions = [];
 
 if ($filter === 'monthly' && $month) {
@@ -28,16 +26,12 @@ if ($filter === 'date-range' && $startDate && $endDate) {
 }
 
 if ($filter === 'all') {
-    // กรองข้อมูลทั้งหมด
 } else {
-    // เพิ่มเงื่อนไขการกรองโดยใช้ปีปัจจุบัน
     $whereConditions[] = "VisitYear = YEAR(CURRENT_DATE)";
 }
 
-// ถ้าไม่มีเงื่อนไข, ให้ใช้เงื่อนไข 1=1
 $whereClause = empty($whereConditions) ? "1=1" : implode(" AND ", $whereConditions);
 
-// Query ที่ใช้ดึงข้อมูลประเภทที่มีการเข้าชมมากที่สุด
 $sql = "
     SELECT tp.TypeID, tp.TypeTitle, SUM(vc.VisitCount) AS TotalVisitCount
     FROM visitcount vc
@@ -50,32 +44,27 @@ $sql = "
 
 $result = mysqli_query($conn, $sql);
 
-$response = []; // เก็บข้อมูลที่จะส่งกลับ
+$response = [];
 
 if ($result) {
     $data = mysqli_fetch_assoc($result);
     if ($data) {
-        // ส่งข้อมูลในรูปแบบ JSON
         $response = [
             'type' => $data['TypeTitle'],
             'visitCount' => $data['TotalVisitCount']
         ];
     } else {
-        // ถ้าไม่มีข้อมูล
         $response = [
             'type' => 'ไม่มีข้อมูล',
             'visitCount' => 0
         ];
     }
 } else {
-    // ถ้ามีข้อผิดพลาดใน query
     $response = [
         'error' => 'เกิดข้อผิดพลาดในการดึงข้อมูล'
     ];
 }
 
-// ส่งข้อมูลกลับเป็น JSON
 echo json_encode($response);
 
-// ปิดการเชื่อมต่อฐานข้อมูล
 mysqli_close($conn);

@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 
 if (!isset($_SESSION['AdminUserName'])) {
-    header("Location: ./adminlogin/adminlogin.php"); // ถ้าไม่มีการล็อกอินให้กลับไปที่หน้า login
+    header("Location: ./adminlogin/adminlogin.php");
     exit();
 }
 ?>
@@ -180,7 +180,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
     </section>
 
-
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -190,16 +189,11 @@ if (!isset($_SESSION['AdminUserName'])) {
                     bodypd = document.getElementById(bodyId),
                     headerpd = document.getElementById(headerId)
 
-                // Validate that all variables exist
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-                        // show navbar
                         nav.classList.toggle('show-slidbar')
-                        // change icon
                         toggle.classList.toggle('bx-x')
-                        // add padding to body
                         bodypd.classList.toggle('body-pd')
-                        // add padding to header
                         headerpd.classList.toggle('body-pd')
                     })
                 }
@@ -207,7 +201,6 @@ if (!isset($_SESSION['AdminUserName'])) {
 
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
 
-            /*===== LINK ACTIVE =====*/
             const linkColor = document.querySelectorAll('.nav_link')
 
             function colorLink() {
@@ -218,7 +211,6 @@ if (!isset($_SESSION['AdminUserName'])) {
             }
             linkColor.forEach(l => l.addEventListener('click', colorLink))
 
-            // Your code to run since DOM is loaded and ready
         });
     </script>
 
@@ -261,7 +253,7 @@ if (!isset($_SESSION['AdminUserName'])) {
                         text: "กรุณา login ใหม่",
                         confirmButtonText: "ตกลง",
                     }).then(() => {
-                        window.location.href = "./adminlogin/adminlogout.php"; // ล็อกเอาต์เมื่อกด "ตกลง"
+                        window.location.href = "./adminlogin/adminlogout.php";
                     });
                 }, 30 * 60 * 1000); // 30 นาที
             }
@@ -270,7 +262,7 @@ if (!isset($_SESSION['AdminUserName'])) {
             document.addEventListener("keypress", resetTimer);
             document.addEventListener("click", resetTimer);
 
-            resetTimer(); // เริ่มต้นการนับเวลา
+            resetTimer();
         });
     </script>
 

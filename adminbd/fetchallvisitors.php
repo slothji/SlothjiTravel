@@ -1,15 +1,14 @@
 <?php
 include 'db.php';
 
-// รับค่าตัวกรองจาก URL
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $month = isset($_GET['month']) ? intval($_GET['month']) : '';
 $date = isset($_GET['date']) ? $_GET['date'] : '';
-$year = isset($_GET['year']) ? intval($_GET['year']) : date("Y"); // ใช้ปีที่เลือกหรือปีปัจจุบัน
-$startDate = isset($_GET['startDate']) ? $_GET['startDate'] : ''; // วันที่เริ่มต้นช่วงวัน
-$endDate = isset($_GET['endDate']) ? $_GET['endDate'] : ''; // วันที่สิ้นสุดช่วงวัน
+$year = isset($_GET['year']) ? intval($_GET['year']) : date("Y");
+$startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
+$endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
 
-$whereClause = ""; // ค่าเริ่มต้นคือไม่มีกำหนดเงื่อนไข
+$whereClause = "";
 
 // การกรองตามเดือน
 if ($filter === "monthly" && $month) {
@@ -29,21 +28,19 @@ elseif ($filter === "date-range" && $startDate && $endDate) {
     $whereClause = "WHERE DATE(VisitDateTime) BETWEEN '$startDate' AND '$endDate'";
 }
 
-// ดึงข้อมูลจำนวนการเข้าชม
 $query = "SELECT SUM(VisitCount) AS total_visits FROM allvisitors $whereClause";
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
-    die("Error: " . mysqli_error($conn)); // แสดงข้อผิดพลาดถ้าคิวรีผิดพลาด
+    die("Error: " . mysqli_error($conn));
 }
 
 $row = mysqli_fetch_assoc($result);
 $totalVisits = isset($row['total_visits']) ? $row['total_visits'] : 0;
 
-// ส่งข้อมูลในรูปแบบ JSON
 $response = [
     'totalVisits' => $totalVisits
 ];
 
-header('Content-Type: application/json'); // กำหนด Content-Type เป็น JSON
-echo json_encode($response); // ส่งข้อมูลเป็น JSON
+header('Content-Type: application/json');
+echo json_encode($response);

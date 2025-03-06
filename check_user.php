@@ -1,5 +1,5 @@
 <?php
-session_start(); // ต้องเรียกใช้ก่อนใช้งาน $_SESSION
+session_start();
 include 'dataDB.php';
 
 if (isset($_POST['username'], $_POST['email'])) {
@@ -13,7 +13,7 @@ if (isset($_POST['username'], $_POST['email'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $_SESSION['verified_user'] = $username; // ✅ บันทึก Session
+        $_SESSION['verified_user'] = $username;
         echo "found";
     } else {
         echo "not_found";

@@ -13,7 +13,7 @@ $sql = "SELECT t.TypeTitle, SUM(v.VisitCount) AS TotalVisits
 $conditions = [];
 
 if ($filter === "monthly" && !empty($month)) {
-    $year = date("Y"); // ใช้ปีปัจจุบัน
+    $year = date("Y");
     $conditions[] = "v.VisitMonth = " . intval($month) . " AND v.VisitYear = " . intval($year);
 }
 if ($filter === "daily" && !empty($date)) {

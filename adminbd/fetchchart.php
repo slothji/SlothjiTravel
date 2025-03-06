@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // เชื่อมต่อฐานข้อมูล
+include 'db.php';
 
 $filter = $_GET['filter'] ?? 'all';
 $month = $_GET['month'] ?? '';
